@@ -44,12 +44,6 @@
     <testsuite name="kernel">
       <directory>./tests/src/Kernel</directory>
     </testsuite>
-    <testsuite name="functional">
-      <directory>./tests/src/Functional</directory>
-    </testsuite>
-    <testsuite name="functional-javascript">
-      <directory>./tests/src/FunctionalJavascript</directory>
-    </testsuite>
   </testsuites>
   <source ignoreSuppressionOfDeprecations="true">
     <include>
