@@ -117,8 +117,10 @@ msgctxt "Hakuvahti"
 msgid "Save a new search for jobs"
 msgstr "Tilaa uusi avoimien työpaikkojen hakuvahti"
 
+msgctxt "Hakuvahti"
 msgid "Saved search confirmation"
 msgstr "Hakuvahdin vahvistaminen"
 
+msgctxt "Hakuvahti"
 msgid "Saved search deletion"
 msgstr "Hakuvahdin poistaminen"
