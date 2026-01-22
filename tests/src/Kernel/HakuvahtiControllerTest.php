@@ -135,7 +135,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
   /**
    * Data provider for testRenewAndUnsubscribeRoutes.
    */
-  private function dataProvider(): array {
+  public static function dataProvider(): array {
     return [
       [
         'helfi_hakuvahti.renew',
