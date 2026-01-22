@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 
 use Drupal\Core\Url;
+use Drupal\helfi_hakuvahti\Controller\HakuvahtiController;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
@@ -107,6 +108,16 @@ class HakuvahtiControllerTest extends KernelTestBase {
       $this->assertEquals(200, $response->getStatusCode());
       $this->assertStringContainsString($message, $response->getContent() ?? '');
     }
+  }
+
+  /**
+   * Tests page titles.
+   */
+  public function testTitle() : void {
+    $sut = HakuvahtiController::create($this->container);
+    $this->assertEquals('Renew saved search', $sut->getRenewTitle());
+    $this->assertEquals('Saved search deletion', $sut->getUnsubscribeTitle());
+    $this->assertEquals('Saved search confirmation', $sut->getConfirmationTitle());
   }
 
   /**
