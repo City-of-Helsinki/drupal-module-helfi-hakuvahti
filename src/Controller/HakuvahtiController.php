@@ -83,6 +83,11 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
           'subscription' => $subscription,
         ],
       ]),
+      '#cache' => [
+        'contexts' => [
+          'url',
+        ],
+      ],
     ];
   }
 
