@@ -117,8 +117,10 @@ msgctxt "Hakuvahti"
 msgid "Save a new search for jobs"
 msgstr "Beställ en ny sökvakt för lediga jobb"
 
+msgctxt "Hakuvahti"
 msgid "Saved search confirmation"
 msgstr "Bekräftelse av sökvakten"
 
+msgctxt "Hakuvahti"
 msgid "Saved search deletion"
 msgstr "Radering av sökvakten"

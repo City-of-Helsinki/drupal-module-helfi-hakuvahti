@@ -8,23 +8,23 @@ helfi_hakuvahti.subscribe:
 helfi_hakuvahti.confirm:
   path: '/hakuvahti/confirm'
   defaults:
-    _title: 'Saved search confirmation'
     _controller: '\Drupal\helfi_hakuvahti\Controller\HakuvahtiController::confirm'
+    _title_callback: '\Drupal\helfi_hakuvahti\Controller\HakuvahtiController::getConfirmationTitle'
   requirements:
     _permission: 'access content'
 
 helfi_hakuvahti.renew:
   path: '/hakuvahti/renew'
   defaults:
-    _title: 'Renew saved search'
     _controller: '\Drupal\helfi_hakuvahti\Controller\HakuvahtiController::renew'
+    _title_callback: '\Drupal\helfi_hakuvahti\Controller\HakuvahtiController::getRenewTitle'
   requirements:
     _permission: 'access content'
 
 helfi_hakuvahti.unsubscribe:
   path: '/hakuvahti/unsubscribe'
   defaults:
-    _title: 'Saved search deletion'
     _controller: '\Drupal\helfi_hakuvahti\Controller\HakuvahtiController::unsubscribe'
+    _title_callback: '\Drupal\helfi_hakuvahti\Controller\HakuvahtiController::getUnsubscribeTitle'
   requirements:
     _permission: 'access content'

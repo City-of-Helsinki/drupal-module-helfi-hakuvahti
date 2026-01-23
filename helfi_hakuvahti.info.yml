@@ -4,4 +4,4 @@ description: 'Drupal-integration for hakuvahti.'
 package: HELfi
 core_version_requirement: ^10 || ^11
 'interface translation project': helfi_hakuvahti
-'interface translation server pattern': modules/custom/helfi_hakuvahti/translations/%language.po
+'interface translation server pattern': modules/contrib/helfi_hakuvahti/translations/%language.po

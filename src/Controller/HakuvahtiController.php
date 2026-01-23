@@ -28,6 +28,36 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
   }
 
   /**
+   * A controller callback for confirm route that provides the route title.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+   *   The translated route title.
+   */
+  public function getConfirmationTitle() {
+    return $this->t('Saved search confirmation', [], ['context' => 'Hakuvahti']);
+  }
+
+  /**
+   * A controller callback for renew route that provides the route title.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+   *   The translated route title.
+   */
+  public function getRenewTitle() {
+    return $this->t('Renew saved search', [], ['context' => 'Hakuvahti']);
+  }
+
+  /**
+   * A controller callback for unsubscribe route that provides the route title.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+   *   The translated route title.
+   */
+  public function getUnsubscribeTitle() {
+    return $this->t('Saved search deletion', [], ['context' => 'Hakuvahti']);
+  }
+
+  /**
    * Handles the confirmation of a saved search.
    *
    * @return array
@@ -53,6 +83,11 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
           'subscription' => $subscription,
         ],
       ]),
+      '#cache' => [
+        'contexts' => [
+          'url',
+        ],
+      ],
     ];
   }
 
