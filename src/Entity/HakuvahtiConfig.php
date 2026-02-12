@@ -5,25 +5,19 @@ declare(strict_types=1);
 namespace Drupal\helfi_hakuvahti\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Entity\Attribute\ConfigEntityType;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Defines the Hakuvahti configuration entity.
- *
- * @ConfigEntityType(
- *   id = "hakuvahti_config",
- *   label = @Translation("Hakuvahti Configuration"),
- *   config_prefix = "config",
- *   entity_keys = {
- *     "id" = "id",
- *     "label" = "label"
- *   },
- *   config_export = {
- *     "id",
- *     "label",
- *     "site_id"
- *   }
- * )
  */
+#[ConfigEntityType(
+  id: 'hakuvahti_config',
+  label: new TranslatableMarkup('Hakuvahti Configuration'),
+  config_prefix: 'config',
+  entity_keys: ['id' => 'id', 'label' => 'label'],
+  config_export: ['id', 'label', 'site_id'],
+)]
 class HakuvahtiConfig extends ConfigEntityBase {
 
   /**
