@@ -12,15 +12,6 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class SettingsForm extends ConfigFormBase {
 
-  use AutowireTrait;
-
-  public function __construct(
-    ConfigFactoryInterface $configFactory,
-    TypedConfigManagerInterface $typedConfigManager,
-  ) {
-    parent::__construct($configFactory, $typedConfigManager);
-  }
-
   /**
    * {@inheritdoc}
    */
