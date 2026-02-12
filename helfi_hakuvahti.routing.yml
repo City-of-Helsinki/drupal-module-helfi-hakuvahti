@@ -1,3 +1,13 @@
+helfi_hakuvahti.settings:
+  path: '/admin/tools/hakuvahti'
+  defaults:
+    _form: '\Drupal\helfi_hakuvahti\Form\SettingsForm'
+    _title: 'Hakuvahti settings'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
 helfi_hakuvahti.subscribe:
   path: '/hakuvahti/subscribe'
   defaults:

@@ -1,6 +1,9 @@
 msgid ""
 msgstr ""
 
+msgid "Hakuvahti settings"
+msgstr "Hakuvahdin asetukset"
+
 msgctxt "Hakuvahti"
 msgid "You can save more searches at any time."
 msgstr "Voit koska tahansa tilata uusia hakuvahteja."

@@ -1,0 +1,4 @@
+helfi_hakuvahti.settings:
+  route_name: helfi_hakuvahti.settings
+  title: 'Hakuvahti settings'
+  base_route: helfi_hakuvahti.settings
