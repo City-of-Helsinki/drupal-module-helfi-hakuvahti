@@ -6,12 +6,14 @@ namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 
 use Drupal\helfi_hakuvahti\DrupalSettings;
 use Drupal\KernelTests\KernelTestBase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests for the DrupalSettings service.
- *
- * @group helfi_hakuvahti
  */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
 class DrupalSettingsTest extends KernelTestBase {
 
   /**

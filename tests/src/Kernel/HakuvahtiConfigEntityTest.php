@@ -6,12 +6,14 @@ namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\KernelTests\KernelTestBase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests for Hakuvahti configuration entity.
- *
- * @group helfi_hakuvahti
  */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
 class HakuvahtiConfigEntityTest extends KernelTestBase {
 
   /**

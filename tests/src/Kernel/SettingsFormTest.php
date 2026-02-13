@@ -8,12 +8,14 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\helfi_hakuvahti\Form\SettingsForm;
 use Drupal\KernelTests\KernelTestBase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests for the Hakuvahti settings form.
- *
- * @group helfi_hakuvahti
  */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
 class SettingsFormTest extends KernelTestBase {
 
   /**

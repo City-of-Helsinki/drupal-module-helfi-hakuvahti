@@ -14,12 +14,16 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\DependencyInjection\Loader\Configurator\Traits\PropertyTrait;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Tests for hakuvahti subscribe controller.
  */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
 class HakuvahtiSubscribeControllerTest extends KernelTestBase {
 
   use ApiTestTrait;
