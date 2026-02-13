@@ -54,7 +54,7 @@ class DrupalSettingsTest extends KernelTestBase {
     $build = [];
     $this->container->get(DrupalSettings::class)->applyTo($build);
 
-    $settings = $build['#attached']['drupalSettings']['hakuvahti'];
+    $settings = $build['#attached']['drupalSettings']['hakuvahti']['texts'];
     $this->assertEquals('I agree', $settings['hakuvahti_tos_checkbox_label']);
     $this->assertEquals('Privacy policy', $settings['hakuvahti_tos_link_text']);
     $this->assertEquals('https://example.com/tos', $settings['hakuvahti_tos_link_url']);
@@ -74,7 +74,7 @@ class DrupalSettingsTest extends KernelTestBase {
     $build = [];
     $this->container->get(DrupalSettings::class)->applyTo($build);
 
-    $settings = $build['#attached']['drupalSettings']['hakuvahti'];
+    $settings = $build['#attached']['drupalSettings']['hakuvahti']['texts'];
     $this->assertNull($settings['hakuvahti_tos_link_url']);
     $this->assertNull($settings['hakuvahti_instructions_link_url']);
   }

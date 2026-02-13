@@ -55,10 +55,10 @@ readonly class DrupalSettings {
 
       $drupalSettings = [];
       foreach (self::EXPOSED_SETTINGS as $exposed_setting) {
-        $drupalSettings[$exposed_setting] = $settings->get($exposed_setting) ?: NULL;
+        $drupalSettings['texts'][$exposed_setting] = $settings->get($exposed_setting) ?: NULL;
       }
 
-      $drupalSettings['subscribe_url'] = Url::fromRoute('helfi_hakuvahti.subscribe')->toString();
+      $drupalSettings['apiUrl'] = Url::fromRoute('helfi_hakuvahti.subscribe')->toString();
 
       $build['#attached']['drupalSettings']['hakuvahti'] = $drupalSettings;
 
