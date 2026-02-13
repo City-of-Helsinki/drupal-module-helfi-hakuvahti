@@ -11,12 +11,24 @@ namespace Drupal\helfi_hakuvahti;
  */
 final readonly class HakuvahtiRequest {
 
-  private const MAX_SEARCH_DESCRIPTION_LENGTH = 999;
+  private const int MAX_SEARCH_DESCRIPTION_LENGTH = 999;
+  private const array REQUIRED_FIELDS = [
+    'lang',
+    'siteId',
+    'query',
+    'elasticQuery',
+    'searchDescription',
+  ];
 
   /**
    * The email address.
    */
-  public string $email;
+  public ?string $email;
+
+  /**
+   * User phone number.
+   */
+  public ?string $sms;
 
   /**
    * Language id.
@@ -29,7 +41,7 @@ final readonly class HakuvahtiRequest {
   public string $siteId;
 
   /**
-   * The request parameters from the request uli.
+   * The request parameters from the request uri.
    */
   public string $query;
 
@@ -41,6 +53,13 @@ final readonly class HakuvahtiRequest {
   public string $elasticQuery;
 
   /**
+   * If true, the elastic query is stored in ATV.
+   *
+   * Use this if the query can contain user data.
+   */
+  public bool $elasticQueryAtv;
+
+  /**
    * The search description.
    *
    * Search description is a string required by hakuvahti. According to
@@ -50,43 +69,43 @@ final readonly class HakuvahtiRequest {
   public string $searchDescription;
 
   public function __construct(array $requestData) {
-    $requiredFields = ['email', 'lang', 'site_id', 'query', 'elastic_query', 'search_description'];
-
-    foreach ($requiredFields as $fieldName) {
+    foreach (self::REQUIRED_FIELDS as $fieldName) {
       if (!isset($requestData[$fieldName])) {
         throw new \InvalidArgumentException("Request is missing field: $fieldName");
       }
     }
 
-    if (!filter_var($requestData['email'], FILTER_VALIDATE_EMAIL)) {
+    $this->lang = $requestData['lang'];
+    $this->siteId = $requestData['siteId'];
+    $this->query = $requestData['query'];
+    $this->elasticQuery = $requestData['elasticQuery'];
+    $this->elasticQueryAtv = $requestData['elasticQueryAtv'] ?? FALSE;
+    $this->searchDescription = $requestData['searchDescription'];
+    $this->email = $requestData['email'] ?? NULL;
+    $this->sms = $requestData['sms'] ?? NULL;
+
+    // User chooses which notification type they get. Either field can be NULL.
+    if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
       throw new \InvalidArgumentException("Email must be a valid email address");
     }
 
-    if (strlen($requestData['search_description']) > self::MAX_SEARCH_DESCRIPTION_LENGTH) {
+    if (strlen($this->searchDescription) > self::MAX_SEARCH_DESCRIPTION_LENGTH) {
       throw new \InvalidArgumentException("Search description is too long.");
     }
-
-    $this->email = $requestData['email'];
-    $this->lang = $requestData['lang'];
-    $this->siteId = $requestData['site_id'];
-    $this->query = $requestData['query'];
-    $this->elasticQuery = $requestData['elastic_query'];
-    $this->searchDescription = $requestData['search_description'];
   }
 
   /**
    * Return the data to be sent for hakuvahti services subscription endpoint.
-   *
-   * @return array
-   *   The data for hakuvahti subscription request.
    */
   public function getServiceRequestData(): array {
     return [
       'email' => $this->email,
+      'sms' => $this->sms,
       'lang' => $this->lang,
       'site_id' => $this->siteId,
       'query' => $this->query,
       'elastic_query' => $this->elasticQuery,
+      'elastic_query_atv' => $this->elasticQueryAtv,
       'search_description' => $this->searchDescription,
     ];
   }

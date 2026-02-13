@@ -82,8 +82,8 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
       'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(500, $response->getStatusCode());
 
@@ -95,8 +95,8 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
       'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(500, $response->getStatusCode());
 
@@ -104,8 +104,8 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
       'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(200, $response->getStatusCode());
   }

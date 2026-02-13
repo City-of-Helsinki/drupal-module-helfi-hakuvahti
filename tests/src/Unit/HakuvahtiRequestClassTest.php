@@ -6,60 +6,95 @@ namespace Drupal\Tests\helfi_hakuvahti\Unit;
 
 use Drupal\helfi_hakuvahti\HakuvahtiRequest;
 use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests rekry specific hakuvahti features.
- *
- * @group helfi_rekry_content
  */
+#[Group('helfi_hakuvahti')]
 class HakuvahtiRequestClassTest extends UnitTestCase {
-
-  /**
-   * Test that an exception is thrown if request has missing parameters.
-   */
-  public function testMissingRequestParameter(): void {
-    $this->expectException(\InvalidArgumentException::class);
-    new HakuvahtiRequest([]);
-  }
 
   /**
    * Test the request class.
    */
-  public function testRequestClass(): void {
-    $requiredFields = $this->getRequiredData();
-
-    try {
-      $requiredFields['email'] = 'invalid@email';
-      new HakuvahtiRequest($requiredFields);
-    }
-    catch (\InvalidArgumentException $e) {
-      $this->assertIsObject($e, 'Validated email address format');
+  #[DataProvider('data')]
+  public function testRequestClass(array $request, ?array $expected = NULL): void {
+    if (!$expected) {
+      $this->expectException(\InvalidArgumentException::class);
     }
 
-    $requiredFields = $this->getRequiredData();
-    $request = new HakuvahtiRequest($requiredFields);
+    $hakuvahtiRequest = new HakuvahtiRequest($request);
 
-    $serviceRequestData = $request->getServiceRequestData();
-    $this->assertEquals($serviceRequestData, $this->getRequiredData());
-    $this->assertEquals($serviceRequestData['elastic_query'], $request->elasticQuery);
-    $this->assertEquals($serviceRequestData['search_description'], $request->searchDescription);
-    $this->assertEquals($serviceRequestData['query'], $request->query);
+    if ($expected) {
+      $serviceRequestData = $hakuvahtiRequest->getServiceRequestData();
+      $this->assertEquals($serviceRequestData, $expected);
+    }
   }
 
   /**
-   * Get the initial request data.
-   *
-   * @return array
-   *   The hakuvahti initial request data.
+   * Get tests data.
    */
-  private function getRequiredData(): array {
+  public static function data(): array {
     return [
-      'email' => 'valid@email.fi',
-      'lang' => 'fi',
-      'site_id' => 'rekry',
-      'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'this-is_the_base64_encoded_elasticsearch_query',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      // Email only request.
+      [
+        'request' => [
+          'email' => 'valid@email.fi',
+          'lang' => 'fi',
+          'siteId' => 'rekry',
+          'query' => '?query=123&parameters=4567',
+          'elasticQuery' => 'this-is_the_base64_encoded_elasticsearch_query',
+          'searchDescription' => 'This, is the query filters string, separated, by comma',
+        ],
+        'expected' => [
+          'email' => 'valid@email.fi',
+          'sms' => NULL,
+          'lang' => 'fi',
+          'site_id' => 'rekry',
+          'query' => '?query=123&parameters=4567',
+          'elastic_query' => 'this-is_the_base64_encoded_elasticsearch_query',
+          'elastic_query_atv' => FALSE,
+          'search_description' => 'This, is the query filters string, separated, by comma',
+        ],
+      ],
+      // Phone-number-only request.
+      [
+        'request' => [
+          'sms' => '044 123 4567',
+          'lang' => 'fi',
+          'siteId' => 'rekry',
+          'query' => '?query=123&parameters=4567',
+          'elasticQuery' => 'this-is_the_base64_encoded_elasticsearch_query',
+          'elasticQueryAtv' => TRUE,
+          'searchDescription' => 'This, is the query filters string, separated, by comma',
+        ],
+        'expected' => [
+          'email' => NULL,
+          'sms' => '044 123 4567',
+          'lang' => 'fi',
+          'site_id' => 'rekry',
+          'query' => '?query=123&parameters=4567',
+          'elastic_query' => 'this-is_the_base64_encoded_elasticsearch_query',
+          'elastic_query_atv' => TRUE,
+          'search_description' => 'This, is the query filters string, separated, by comma',
+        ],
+      ],
+      // Test that an exception is thrown if the request has missing parameters.
+      [
+        'request' => [],
+      ],
+      // Test that an exception is thrown if parameters fail validation.
+      [
+        'request' => [
+          'email' => 'invalid@email',
+          'lang' => 'fi',
+          'siteId' => 'rekry',
+          'query' => '?query=123&parameters=4567',
+          'elasticQuery' => 'this-is_the_base64_encoded_elasticsearch_query',
+          'searchDescription' => 'This, is the query filters string, separated, by comma',
+        ],
+      ],
     ];
   }
 
