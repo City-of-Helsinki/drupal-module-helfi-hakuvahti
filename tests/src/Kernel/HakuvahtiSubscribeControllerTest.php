@@ -81,7 +81,6 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     // Missing config.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
-      'lang' => 'fi',
       'query' => '?query=123&parameters=4567',
       'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
       'search_description' => 'This, is the query filters string, separated, by comma',
@@ -95,7 +94,6 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     // Subscribe with api error.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
-      'lang' => 'fi',
       'query' => '?query=123&parameters=4567',
       'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
       'search_description' => 'This, is the query filters string, separated, by comma',
@@ -105,7 +103,6 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     // Success.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
-      'lang' => 'fi',
       'query' => '?query=123&parameters=4567',
       'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
       'search_description' => 'This, is the query filters string, separated, by comma',
