@@ -14,12 +14,16 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\DependencyInjection\Loader\Configurator\Traits\PropertyTrait;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Tests for hakuvahti subscribe controller.
  */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
 class HakuvahtiSubscribeControllerTest extends KernelTestBase {
 
   use ApiTestTrait;
@@ -77,10 +81,9 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     // Missing config.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
-      'lang' => 'fi',
       'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(500, $response->getStatusCode());
 
@@ -91,20 +94,18 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     // Subscribe with api error.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
-      'lang' => 'fi',
       'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(500, $response->getStatusCode());
 
     // Success.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
-      'lang' => 'fi',
       'query' => '?query=123&parameters=4567',
-      'elastic_query' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
-      'search_description' => 'This, is the query filters string, separated, by comma',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(200, $response->getStatusCode());
   }

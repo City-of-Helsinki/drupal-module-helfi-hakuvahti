@@ -54,7 +54,13 @@ final class HakuvahtiSubscribeController extends ControllerBase implements Logge
       }
 
       // Use site_id from configuration entity.
-      $requestData['site_id'] = $config->getSiteId();
+      $requestData['siteId'] = $config->getSiteId();
+
+      // The frontend gets api url from the DrupalSettings service. The
+      // service sets language prefixed subscribe urls, so the frontend
+      // does not need to keep track of the current language, we know it
+      // from the request context.
+      $requestData['lang'] = $this->languageManager()->getCurrentLanguage()->getId();
 
       $requestObject = new HakuvahtiRequest($requestData);
     }

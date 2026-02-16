@@ -12,6 +12,8 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\Traits\PropertyTrait;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -19,6 +21,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 /**
  * Tests for hakuvahti controller.
  */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
 class HakuvahtiControllerTest extends KernelTestBase {
 
   use ApiTestTrait;
