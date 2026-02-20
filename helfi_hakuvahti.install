@@ -14,8 +14,6 @@ declare(strict_types=1);
  */
 function helfi_hakuvahti_update_11001(): void {
   \Drupal::configFactory()->getEditable('helfi_hakuvahti.settings')
-    ->set('hakuvahti_tos_checkbox_label', 'I consent to the processing of my personal data')
-    ->set('hakuvahti_tos_link_text', 'Read our privacy policy (pdf).')
     ->set('hakuvahti_tos_link_url', '')
     ->set('hakuvahti_instructions_link_url', '')
     ->set('langcode', 'en')

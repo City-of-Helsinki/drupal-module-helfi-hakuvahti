@@ -37,8 +37,6 @@ class SettingsFormTest extends KernelTestBase {
   public function testSubmitSavesConfig(): void {
     $form_state = new FormState();
     $form_state->setValues([
-      'hakuvahti_tos_checkbox_label' => 'I agree',
-      'hakuvahti_tos_link_text' => 'Privacy policy',
       'hakuvahti_tos_link_url' => 'https://example.com/tos',
       'hakuvahti_instructions_link_url' => 'https://example.com/instructions',
     ]);
@@ -48,8 +46,6 @@ class SettingsFormTest extends KernelTestBase {
     $this->assertEmpty($form_state->getErrors());
 
     $config = $this->config('helfi_hakuvahti.settings');
-    $this->assertEquals('I agree', $config->get('hakuvahti_tos_checkbox_label'));
-    $this->assertEquals('Privacy policy', $config->get('hakuvahti_tos_link_text'));
     $this->assertEquals('https://example.com/tos', $config->get('hakuvahti_tos_link_url'));
     $this->assertEquals('https://example.com/instructions', $config->get('hakuvahti_instructions_link_url'));
   }

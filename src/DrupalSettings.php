@@ -17,8 +17,6 @@ readonly class DrupalSettings {
    * Settings that are exposed to JavaScript.
    */
   public const array EXPOSED_SETTINGS = [
-    'hakuvahti_tos_checkbox_label',
-    'hakuvahti_tos_link_text',
     'hakuvahti_tos_link_url',
     'hakuvahti_instructions_link_url',
   ];

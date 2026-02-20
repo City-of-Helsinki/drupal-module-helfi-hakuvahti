@@ -30,19 +30,6 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
-    $form['settings']['hakuvahti_tos_checkbox_label'] = [
-      '#type' => 'textfield',
-      '#config_target' => 'helfi_hakuvahti.settings:hakuvahti_tos_checkbox_label',
-      '#title' => $this->t('Hakuvahti terms of service checkbox label'),
-      '#description' => $this->t('Label for the terms of service checkbox.'),
-    ];
-
-    $form['settings']['hakuvahti_tos_link_text'] = [
-      '#type' => 'textfield',
-      '#config_target' => 'helfi_hakuvahti.settings:hakuvahti_tos_link_text',
-      '#title' => $this->t('Hakuvahti terms of service link text'),
-    ];
-
     $form['settings']['hakuvahti_tos_link_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Hakuvahti terms of service URL'),
