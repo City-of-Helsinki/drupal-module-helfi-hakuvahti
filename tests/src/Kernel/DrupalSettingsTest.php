@@ -45,8 +45,6 @@ class DrupalSettingsTest extends KernelTestBase {
   public function testApplyToExposesSettings(): void {
     $this->config('helfi_hakuvahti.settings')
       ->set('base_url', 'https://hakuvahti.example.com')
-      ->set('hakuvahti_tos_checkbox_label', 'I agree')
-      ->set('hakuvahti_tos_link_text', 'Privacy policy')
       ->set('hakuvahti_tos_link_url', 'https://example.com/tos')
       ->set('hakuvahti_instructions_link_url', 'https://example.com/instructions')
       ->save();
@@ -55,8 +53,6 @@ class DrupalSettingsTest extends KernelTestBase {
     $this->container->get(DrupalSettings::class)->applyTo($build);
 
     $settings = $build['#attached']['drupalSettings']['hakuvahti']['texts'];
-    $this->assertEquals('I agree', $settings['hakuvahti_tos_checkbox_label']);
-    $this->assertEquals('Privacy policy', $settings['hakuvahti_tos_link_text']);
     $this->assertEquals('https://example.com/tos', $settings['hakuvahti_tos_link_url']);
     $this->assertEquals('https://example.com/instructions', $settings['hakuvahti_instructions_link_url']);
   }
