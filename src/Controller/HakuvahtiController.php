@@ -132,9 +132,11 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
     $subscription = $request->query->get('subscription');
 
     if ($request->isMethod('POST')) {
-      return $id
-        ? $this->handleSmsRenewSubmission($id)
-        : $this->handleRenewFormSubmission($hash, $subscription);
+      return $this->handleRenewSubmission(
+        $id
+          ? fn() => $this->hakuvahti->renewSms($id)
+          : fn() => $this->hakuvahti->renew($hash, $subscription),
+      );
     }
 
     return [
@@ -153,11 +155,11 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
   }
 
   /**
-   * Handles the renewal form submission.
+   * Handles the renewal submission for both email and SMS.
    */
-  private function handleRenewFormSubmission(string $hash, string $subscription): array {
+  private function handleRenewSubmission(callable $action): array {
     try {
-      $this->hakuvahti->renew($hash, $subscription);
+      $action();
 
       return [
         '#theme' => 'hakuvahti_confirmation',
@@ -169,36 +171,8 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
       // 404 error is returned if:
       // * Submission has been deleted after it expired.
       // * Submission does not exist.
-      if ($exception->getCode() === 404) {
-        $this->logger?->info('Hakuvahti renewal request failed: ' . $exception->getMessage());
-      }
-      else {
-        $this->logger?->error('Hakuvahti renewal request failed: ' . $exception->getMessage());
-      }
-    }
-
-    return [
-      '#theme' => 'hakuvahti_confirmation',
-      '#title' => $this->t('Renewal failed', [], ['context' => 'Hakuvahti']),
-      '#message' => $this->t('Renewing saved search failed. Please try again.', [], ['context' => 'Hakuvahti']),
-    ];
-  }
-
-  /**
-   * Handles the SMS renewal submission.
-   */
-  private function handleSmsRenewSubmission(string $id): array {
-    try {
-      $this->hakuvahti->renewSms($id);
-
-      return [
-        '#theme' => 'hakuvahti_confirmation',
-        '#title' => $this->t('Search renewed successfully', [], ['context' => 'Hakuvahti']),
-        '#message' => $this->t('Your saved search has been renewed.', [], ['context' => 'Hakuvahti']),
-      ];
-    }
-    catch (HakuvahtiException $exception) {
-      $this->logger?->error('Hakuvahti SMS renewal request failed: ' . $exception->getMessage());
+      $logLevel = $exception->getCode() === 404 ? 'info' : 'error';
+      $this->logger?->{$logLevel}('Hakuvahti renewal request failed: ' . $exception->getMessage());
     }
 
     return [
@@ -217,9 +191,21 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
     $subscription = $request->query->get('subscription');
 
     if ($request->isMethod('POST')) {
-      return $id
-        ? $this->handleSmsUnsubscribeSubmission($id)
-        : $this->handleUnsubscribeFormSubmission($hash, $subscription);
+      if (!$this->flood->isAllowed(self::SMS_FLOOD_EVENT, self::SMS_FLOOD_THRESHOLD, self::SMS_FLOOD_WINDOW)) {
+        return [
+          '#theme' => 'hakuvahti_confirmation',
+          '#title' => $this->t('Too many requests'),
+          '#message' => $this->t('Too many requests, please try again later.'),
+        ];
+      }
+
+      $this->flood->register(self::SMS_FLOOD_EVENT, self::SMS_FLOOD_WINDOW);
+
+      return $this->handleUnsubscribeSubmission(
+        $id
+          ? fn() => $this->hakuvahti->deleteSms($id)
+          : fn() => $this->hakuvahti->unsubscribe($hash, $subscription),
+      );
     }
 
     return [
@@ -238,11 +224,11 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
   }
 
   /**
-   * Handles the unsubscribe form submission.
+   * Handles the unsubscribe submission for both email and SMS.
    */
-  private function handleUnsubscribeFormSubmission(string $hash, string $subscription): array {
+  private function handleUnsubscribeSubmission(callable $action): array {
     try {
-      $this->hakuvahti->unsubscribe($hash, $subscription);
+      $action();
 
       return [
         '#theme' => 'hakuvahti_confirmation',
@@ -255,42 +241,22 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
       ];
     }
     catch (HakuvahtiException $exception) {
+      if ($exception->getCode() === 404) {
+        return [
+          '#theme' => 'hakuvahti_confirmation',
+          '#title' => $this->t('Saved search not found', [], ['context' => 'Hakuvahti']),
+          '#message' => $this->t('Saved search was not found. It might be already deleted.', [], ['context' => 'Hakuvahti']),
+        ];
+      }
+
       $this->logger?->error('Hakuvahti unsubscribe request failed: ' . $exception->getMessage());
-
-      return [
-        '#theme' => 'hakuvahti_confirmation',
-        '#title' => $this->t('Failed to delete saved search', [], ['context' => 'Hakuvahti']),
-        '#message' => $this->t('Failed to delete saved search. You can try deleting the saved search again from your email.', [], ['context' => 'Hakuvahti']),
-      ];
     }
-  }
 
-  /**
-   * Handles the SMS unsubscribe submission.
-   */
-  private function handleSmsUnsubscribeSubmission(string $id): array {
-    try {
-      $this->hakuvahti->deleteSms($id);
-
-      return [
-        '#theme' => 'hakuvahti_confirmation',
-        '#title' => $this->t('Saved search deleted', [], ['context' => 'Hakuvahti']),
-        '#message' => [
-          $this->t('The saved search was successfully deleted.', [], ['context' => 'Hakuvahti']),
-          $this->t('You can save more searches at any time.', [], ['context' => 'Hakuvahti']),
-        ],
-        '#link' => Link::fromTextAndUrl($this->t('Save a new search for jobs', [], ['context' => 'Hakuvahti']), Url::fromUri('internal:/')),
-      ];
-    }
-    catch (HakuvahtiException $exception) {
-      $this->logger?->error('Hakuvahti SMS unsubscribe request failed: ' . $exception->getMessage());
-
-      return [
-        '#theme' => 'hakuvahti_confirmation',
-        '#title' => $this->t('Failed to delete saved search', [], ['context' => 'Hakuvahti']),
-        '#message' => $this->t('Failed to delete saved search. You can try deleting the saved search again from your email.', [], ['context' => 'Hakuvahti']),
-      ];
-    }
+    return [
+      '#theme' => 'hakuvahti_confirmation',
+      '#title' => $this->t('Failed to delete saved search', [], ['context' => 'Hakuvahti']),
+      '#message' => $this->t('Failed to delete saved search. You can try deleting the saved search again from your email.', [], ['context' => 'Hakuvahti']),
+    ];
   }
 
   /**

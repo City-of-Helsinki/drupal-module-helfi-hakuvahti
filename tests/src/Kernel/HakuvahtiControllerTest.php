@@ -334,7 +334,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
         [
           ['GET', 'Delete saved search'],
           ['POST', 'The saved search was successfully deleted.'],
-          ['POST', 'Failed to delete saved search'],
+          ['POST', 'Saved search not found'],
           ['POST', 'Failed to delete saved search'],
         ],
       ],
