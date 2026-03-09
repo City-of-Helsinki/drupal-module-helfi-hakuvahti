@@ -21,6 +21,7 @@ function helfi_hakuvahti_theme(): array {
         'autosubmit' => FALSE,
         'button_text' => NULL,
         'action_url' => NULL,
+        'fields' => [],
       ],
     ],
     'hakuvahti_confirmation' => [

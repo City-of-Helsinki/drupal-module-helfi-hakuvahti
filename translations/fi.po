@@ -121,9 +121,14 @@ msgid "Save a new search for jobs"
 msgstr "Tilaa uusi avoimien työpaikkojen hakuvahti"
 
 msgctxt "Hakuvahti"
+msgid "Confirm saved search"
+msgstr "Vahvista hakuvahti"
+
 msgid "Saved search confirmation"
 msgstr "Hakuvahdin vahvistaminen"
 
-msgctxt "Hakuvahti"
 msgid "Saved search deletion"
 msgstr "Hakuvahdin poistaminen"
+
+msgid "Renew saved search"
+msgstr "Jatka hakuvahdin tilausta"

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\helfi_hakuvahti\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Flood\FloodInterface;
 use Drupal\helfi_hakuvahti\Event\SubscriptionAlterEvent;
 use Drupal\helfi_hakuvahti\Event\SubscriptionEvent;
 use Drupal\helfi_hakuvahti\HakuvahtiException;
@@ -24,9 +25,14 @@ final class HakuvahtiSubscribeController extends ControllerBase implements Logge
 
   use LoggerAwareTrait;
 
+  private const string FLOOD_EVENT = 'helfi_hakuvahti.subscribe';
+  private const int FLOOD_THRESHOLD = 10;
+  private const int FLOOD_WINDOW = 3600;
+
   public function __construct(
     private readonly HakuvahtiInterface $hakuvahti,
     private readonly EventDispatcherInterface $eventDispatcher,
+    private readonly FloodInterface $flood,
   ) {
   }
 
@@ -37,6 +43,12 @@ final class HakuvahtiSubscribeController extends ControllerBase implements Logge
    *   The JSON response based on the subscription request.
    */
   public function post(Request $request): JsonResponse {
+    if (!$this->flood->isAllowed(self::FLOOD_EVENT, self::FLOOD_THRESHOLD, self::FLOOD_WINDOW)) {
+      return new JsonResponse(['success' => FALSE, 'error' => 'Too many requests, please try again later.'], Response::HTTP_TOO_MANY_REQUESTS);
+    }
+
+    $this->flood->register(self::FLOOD_EVENT, self::FLOOD_WINDOW);
+
     try {
       $requestData = json_decode($request->getContent(), TRUE, flags: JSON_THROW_ON_ERROR);
 

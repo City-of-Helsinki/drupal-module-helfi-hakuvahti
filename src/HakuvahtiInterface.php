@@ -38,6 +38,27 @@ interface HakuvahtiInterface {
   public function unsubscribe(string $subscriptionHash, string $subscriptionId): void;
 
   /**
+   * Confirm SMS subscription.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function confirmSms(string $subscriptionId, string $code): void;
+
+  /**
+   * Renew SMS subscription.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function renewSms(string $subscriptionId): void;
+
+  /**
+   * Delete SMS subscription.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function deleteSms(string $subscriptionId): void;
+
+  /**
    * Get hakuvahti subscription status.
    *
    * @param string $subscriptionHash

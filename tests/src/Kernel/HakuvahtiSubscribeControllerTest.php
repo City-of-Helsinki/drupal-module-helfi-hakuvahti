@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
+use Drupal\helfi_hakuvahti\Hakuvahti;
+use Drupal\helfi_hakuvahti\HakuvahtiInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
 use Drupal\Tests\helfi_api_base\Traits\EnvironmentResolverTrait;
@@ -108,6 +111,42 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
       'searchDescription' => 'This, is the query filters string, separated, by comma',
     ]);
     $this->assertEquals(200, $response->getStatusCode());
+  }
+
+  /**
+   * Tests flood protection on subscribe endpoint.
+   */
+  public function testFloodProtection(): void {
+    $this->config('helfi_hakuvahti.settings')
+      ->set('base_url', 'https://example.com')
+      ->save();
+
+    // Set up enough mock responses for 10 successful requests.
+    $responses = [];
+    for ($i = 0; $i < 10; $i++) {
+      $responses[] = new Response(200);
+    }
+
+    $client = $this->createMockHttpClient($responses);
+    $this->container->set(HakuvahtiInterface::class, new Hakuvahti($client, $this->container->get(ConfigFactoryInterface::class)));
+
+    $this->setUpCurrentUser(permissions: ['access content']);
+
+    $body = [
+      'email' => 'valid@email.fi',
+      'query' => '?query=123&parameters=4567',
+      'elasticQuery' => 'eyJxdWVyeSI6eyJib29sIjp7ImZpbHRlciI6W3sidGVybSI6eyJlbnRpdHlfdHlwZSI6Im5vZGUifX1dfX19',
+      'searchDescription' => 'This, is the query filters string, separated, by comma',
+    ];
+
+    for ($i = 0; $i < 10; $i++) {
+      $response = $this->makeRequest($body);
+      $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    // 11th request should be rate limited.
+    $response = $this->makeRequest($body);
+    $this->assertEquals(429, $response->getStatusCode());
   }
 
   /**
