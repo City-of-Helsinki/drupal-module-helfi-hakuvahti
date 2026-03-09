@@ -58,19 +58,4 @@ interface HakuvahtiInterface {
    */
   public function deleteSms(string $subscriptionId): void;
 
-  /**
-   * Get hakuvahti subscription status.
-   *
-   * @param string $subscriptionHash
-   *   The subscription hash.
-   * @param string $subscriptionId
-   *   The subscription ID.
-   *
-   * @return string|null
-   *   The subscription status or NULL if not found.
-   *
-   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
-   */
-  public function getStatus(string $subscriptionHash, string $subscriptionId): ?string;
-
 }

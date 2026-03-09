@@ -41,19 +41,17 @@ class HakuvahtiControllerTest extends KernelTestBase {
   ];
 
   /**
-   * Tests confirm route with status check.
+   * Tests confirm route.
    */
   public function testConfirmRoute(): void {
-    // Confirm flow: getStatus() then confirm() if inactive.
     $this->setupHakuvahtiConfig([
-      // POST 1: status=inactive, then confirm succeeds.
-      new Response(200, body: '{"subscriptionStatus": "inactive"}'),
+      // POST 1: confirm succeeds.
       new Response(200, body: ''),
-      // POST 2: status=active (already confirmed).
-      new Response(200, body: '{"subscriptionStatus": "active"}'),
-      // POST 3: status returns 404.
+      // POST 2: confirm returns 409 (already confirmed).
+      new Response(409, body: 'conflict'),
+      // POST 3: confirm returns 404.
       new Response(404, body: 'not found'),
-      // POST 4: status returns 500.
+      // POST 4: confirm returns 500.
       new Response(500, body: 'fail'),
     ]);
 
@@ -179,7 +177,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
    */
   public function testSmsConfirmPostAlreadyConfirmed(): void {
     $this->setupHakuvahtiConfig([
-      new Response(400, body: 'already confirmed'),
+      new Response(409, body: 'already confirmed'),
     ]);
     $this->setUpCurrentUser(permissions: ['access content']);
 

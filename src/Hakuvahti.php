@@ -10,7 +10,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use GuzzleHttp\Utils;
 
 /**
  * Hakuvahti API client.
@@ -36,7 +35,21 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
    * {@inheritdoc}
    */
   public function confirm(string $subscriptionHash, string $subscriptionId): void {
-    $this->makeRequest('POST', "/subscription/confirm/{$subscriptionId}/{$subscriptionHash}");
+    try {
+      $this->makeRequest('POST', "/subscription/confirm/{$subscriptionId}/{$subscriptionHash}");
+    }
+    catch (HakuvahtiException $e) {
+      $previous = $e->getPrevious();
+
+      // Rewrite the exception type if the subscription is already confirmed.
+      if ($previous instanceof BadResponseException) {
+        if ($previous->getResponse()->getStatusCode() === 409) {
+          throw new HakuvahtiAlreadyConfirmedException("Hakuvahti already confirmed", $e->getCode(), previous: $e);
+        }
+      }
+
+      throw $e;
+    }
   }
 
   /**
@@ -69,7 +82,7 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
 
       // Rewrite the exception type if the subscription is already confirmed.
       if ($previous instanceof BadResponseException) {
-        if ($previous->getResponse()->getStatusCode() === 400) {
+        if ($previous->getResponse()->getStatusCode() === 409) {
           throw new HakuvahtiAlreadyConfirmedException("Hakuvahti already confirmed", $e->getCode(), previous: $e);
         }
       }
@@ -93,28 +106,11 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function getStatus(string $subscriptionHash, string $subscriptionId): ?string {
-    try {
-      return $this->makeRequest('GET', "/subscription/status/{$subscriptionId}/{$subscriptionHash}")
-        ?->subscriptionStatus ?? NULL;
-    }
-    catch (HakuvahtiException $exception) {
-      // 404 means subscription not found.
-      if ($exception->getCode() === 404) {
-        return NULL;
-      }
-      throw $exception;
-    }
-  }
-
-  /**
    * Make hakuvahti request.
    *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  private function makeRequest(string $method, string $url, array $options = []): ?\stdClass {
+  private function makeRequest(string $method, string $url, array $options = []): void {
     $settings = $this->configFactory->get('helfi_hakuvahti.settings');
     if (!$baseUrl = $settings->get('base_url')) {
       throw new HakuvahtiException('Hakuvahti base url is not configured.');
@@ -123,20 +119,12 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
     $apiKey = $settings->get('api_key');
 
     try {
-      $response = $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
+      $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
         RequestOptions::HEADERS => [
           'Authorization' => "api-key $apiKey",
         ],
         RequestOptions::TIMEOUT => 5,
       ], $options));
-
-      $body = $response->getBody()->getContents();
-
-      if ($body) {
-        return Utils::jsonDecode($body);
-      }
-
-      return NULL;
     }
     catch (GuzzleException $exception) {
       throw new HakuvahtiException('Hakuvahti unsubscribe request failed: ' . $exception->getMessage(), $exception->getCode(), previous: $exception);
