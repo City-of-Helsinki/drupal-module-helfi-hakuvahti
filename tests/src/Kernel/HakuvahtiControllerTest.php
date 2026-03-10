@@ -137,7 +137,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     $this->assertEquals(200, $response->getStatusCode());
     $content = $response->getContent() ?? '';
     $this->assertStringContainsString('Confirm saved search', $content);
-    $this->assertStringContainsString('Code', $content);
+    $this->assertStringContainsString('Confirmation code', $content);
     $this->assertStringContainsString('name="id"', $content);
     $this->assertStringContainsString('name="code"', $content);
   }
