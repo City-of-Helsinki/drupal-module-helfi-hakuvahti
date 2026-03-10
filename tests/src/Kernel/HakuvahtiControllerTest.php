@@ -62,10 +62,10 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $tests = [
       ['GET', 'Confirm saved search'],
-      ['POST', 'Search saved successfully'],
-      ['POST', 'Saved search already confirmed'],
-      ['POST', 'Confirmation of saved search failed'],
-      ['POST', 'Confirmation of saved search failed'],
+      ['POST', 'Search alert subscription successful'],
+      ['POST', 'already confirmed this search alert'],
+      ['POST', 'Search alert confirmation failed'],
+      ['POST', 'Search alert confirmation failed'],
     ];
 
     foreach ($tests as $test) {
@@ -151,7 +151,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.confirm', ['id' => '']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Confirmation of saved search failed', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?? '');
   }
 
   /**
@@ -169,7 +169,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Search saved successfully', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert subscription successful', $response->getContent() ?? '');
   }
 
   /**
@@ -187,7 +187,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Saved search already confirmed', $response->getContent() ?? '');
+    $this->assertStringContainsString('already confirmed this search alert', $response->getContent() ?? '');
   }
 
   /**
@@ -208,7 +208,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Confirmation of saved search failed', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?? '');
   }
 
   /**
@@ -269,7 +269,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     // POST success.
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.unsubscribe', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('deleted', $response->getContent() ?? '');
+    $this->assertStringContainsString('removed', $response->getContent() ?? '');
   }
 
   /**
@@ -286,7 +286,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.unsubscribe', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Failed to delete saved search', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert removal failed', $response->getContent() ?? '');
   }
 
   /**
@@ -333,9 +333,9 @@ class HakuvahtiControllerTest extends KernelTestBase {
         'helfi_hakuvahti.unsubscribe',
         [
           ['GET', 'Delete saved search'],
-          ['POST', 'The saved search was successfully deleted.'],
+          ['POST', 'search alert has been removed'],
           ['POST', 'Saved search not found'],
-          ['POST', 'Failed to delete saved search'],
+          ['POST', 'Search alert removal failed'],
         ],
       ],
     ];
