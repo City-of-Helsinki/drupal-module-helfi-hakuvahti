@@ -4,126 +4,6 @@ msgstr ""
 msgid "Hakuvahti settings"
 msgstr "Hakuvahdin asetukset"
 
-msgctxt "Hakuvahti"
-msgid "You can save more searches at any time."
-msgstr "Voit koska tahansa tilata uusia hakuvahteja."
-
-msgctxt "Hakuvahti"
-msgid "Search saved successfully"
-msgstr "Hakuvahdin tilaus onnistui"
-
-msgctxt "Hakuvahti"
-msgid "You will receive email alerts about new search results up to once a day."
-msgstr "Saat sähköpostiisi tiedon uusista osumista korkeintaan kerran päivässä."
-
-msgctxt "Hakuvahti"
-msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
-msgstr "Jokaisessa sähköpostissa on peruutuslinkki, josta voit lopettaa tämän hakuvahdin tilauksen. Voit koska tahansa tilata uusia hakuvahteja."
-
-msgctxt "Hakuvahti"
-msgid "Each saved search is valid for 6 months."
-msgstr "Hakuvahti on voimassa 6 kuukautta."
-
-msgctxt "Hakuvahti"
-msgid "Confirmation of saved search failed"
-msgstr "Hakuvahdin vahvistus epäonnistui"
-
-msgctxt "Hakuvahti"
-msgid "The confirmation of your saved search failed. You can try confirming your saved search again from your email."
-msgstr "Hakuvahdin vahvistus epäonnistui. Voit kokeilla vahvistaa hakuvahdin uudelleen sähköpostistasi."
-
-msgctxt "Hakuvahti"
-msgid "Enabling saved search"
-msgstr "Hakuvahtia aktivoidaan"
-
-msgctxt "Hakuvahti"
-msgid "Please wait while the saved search is being enabled."
-msgstr "Hakuvahtia aktivoidaan, odota hetki."
-
-msgctxt "Hakuvahti"
-msgid "Saved search already confirmed"
-msgstr "Hakuvahti on jo vahvistettu"
-
-msgctxt "Hakuvahti"
-msgid "You have already confirmed this saved search."
-msgstr "Olet jo vahvistanut tämän hakuvahdin."
-
-msgctxt "Hakuvahti"
-msgid "You will receive email alerts about new search results up to once a day."
-msgstr "Saat sähköpostiisi tiedon uusista osumista korkeintaan kerran päivässä."
-
-msgctxt "Hakuvahti"
-msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
-msgstr "Jokaisessa sähköpostissa on peruutuslinkki, josta voit lopettaa tämän hakuvahdin tilauksen. Voit koska tahansa tilata uusia hakuvahteja."
-
-msgctxt "Hakuvahti"
-msgid "Renewing saved search"
-msgstr "Hakuvahdin tilauksen jatkaminen"
-
-msgctxt "Hakuvahti"
-msgid "Please wait while the saved search is being renewed."
-msgstr "Hakuvahdin tilausta jatketaan, odota hetki."
-
-msgctxt "Hakuvahti"
-msgid "Renew saved search"
-msgstr "Jatka hakuvahdin tilausta"
-
-msgctxt "Hakuvahti"
-msgid "Search renewed successfully"
-msgstr "Hakuvahdin tilauksen jatkaminen onnistui"
-
-msgctxt "Hakuvahti"
-msgid "Your saved search has been renewed."
-msgstr "Hakuvahtisi tilausta on jatkettu."
-
-msgctxt "Hakuvahti"
-msgid "Renewal failed"
-msgstr "Tilauksen jatkaminen epäonnistui"
-
-msgctxt "Hakuvahti"
-msgid "Renewing saved search failed. Please try again."
-msgstr "Hakuvahdin tilauksen jatkaminen epäonnistui. Yritä uudelleen."
-
-msgctxt "Hakuvahti"
-msgid "Deleting saved search"
-msgstr "Hakuvahtia poistetaan"
-
-msgctxt "Hakuvahti"
-msgid "Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them."
-msgstr "Hakuvahtia poistetaan, odota hetki. Jos olet tehnyt muita hakuvahteja kaupungin verkkosivustolla, tämä ei poista niitä."
-
-msgctxt "Hakuvahti"
-msgid "Delete saved search"
-msgstr "Poista hakuvahti"
-
-msgctxt "Hakuvahti"
-msgid "Failed to delete saved search"
-msgstr "Hakuvahdin poistaminen epäonnistui"
-
-msgctxt "Hakuvahti"
-msgid "Failed to delete saved search. You can try deleting the saved search again from your email."
-msgstr "Hakuvahdin poistaminen epäonnistui. Voit kokeilla poistaa hakuvahdin uudelleen sähköpostistasi."
-
-msgctxt "Hakuvahti"
-msgid "Saved search deleted"
-msgstr "Hakuvahti on poistettu"
-
-msgctxt "Hakuvahti"
-msgid "The saved search was successfully deleted."
-msgstr "Hakuvahti on nyt poistettu."
-
-msgctxt "Hakuvahti"
-msgid "You can save more searches at any time."
-msgstr "Voit koska tahansa tilata uusia hakuvahteja."
-
-msgctxt "Hakuvahti"
-msgid "Save a new search for jobs"
-msgstr "Tilaa uusi avoimien työpaikkojen hakuvahti"
-
-msgctxt "Hakuvahti"
-msgid "Confirm saved search"
-msgstr "Vahvista hakuvahti"
-
 msgid "Saved search confirmation"
 msgstr "Hakuvahdin vahvistaminen"
 
@@ -132,3 +12,159 @@ msgstr "Hakuvahdin poistaminen"
 
 msgid "Renew saved search"
 msgstr "Jatka hakuvahdin tilausta"
+
+# Hakuvahti confirm context
+
+msgctxt "Hakuvahti confirm"
+msgid "Confirm saved search"
+msgstr "Vahvista hakuvahti"
+
+msgctxt "Hakuvahti confirm"
+msgid "Please enter the confirmation code that you received by SMS."
+msgstr "Syötä vahvistuskoodi, jonka sait tekstiviestillä."
+
+msgctxt "Hakuvahti confirm"
+msgid "Enabling saved search"
+msgstr "Hakuvahtia aktivoidaan"
+
+msgctxt "Hakuvahti confirm"
+msgid "Please wait while the saved search is being enabled."
+msgstr "Hakuvahtia aktivoidaan, odota hetki."
+
+msgctxt "Hakuvahti confirm"
+msgid "Confirmation code"
+msgstr "Vahvistuskoodi"
+
+# Hakuvahti confirm success context
+
+msgctxt "Hakuvahti confirm success"
+msgid "Search alert subscription successful"
+msgstr "Hakuvahdin tilaus onnistui"
+
+msgctxt "Hakuvahti confirm success"
+msgid "You will be notified of new search matches no more than once a day."
+msgstr "Saat tiedon uusista osumista korkeintaan kerran päivässä."
+
+msgctxt "Hakuvahti confirm success"
+msgid "You can cancel your subscription using the link sent with each notification."
+msgstr "Voit perua tilauksen linkillä, jonka saat jokaisen ilmoituksen mukana."
+
+msgctxt "Hakuvahti confirm success"
+msgid "You can subscribe to new search alerts at any time. The alerts are valid for 12 months."
+msgstr "Voit koska tahansa tilata uusia hakuvahteja. Hakuvahti on voimassa 12 kuukautta."
+
+# Hakuvahti confirm failure context
+
+msgctxt "Hakuvahti confirm failure"
+msgid "Search alert confirmation failed"
+msgstr "Hakuvahdin vahvistus epäonnistui"
+
+msgctxt "Hakuvahti confirm failure"
+msgid "Your search alert could not be confirmed. You can try confirming the search alert again."
+msgstr "Hakuvahdin vahvistus epäonnistui. Voit kokeilla vahvistaa hakuvahdin uudelleen."
+
+# Hakuvahti already confirmed context
+
+msgctxt "Hakuvahti already confirmed"
+msgid "You have already confirmed this search alert."
+msgstr "Hakuvahti on jo vahvistettu"
+
+msgctxt "Hakuvahti already confirmed"
+msgid "You will receive email alerts about new search results up to once a day."
+msgstr "Saat tiedon uusista osumista korkeintaan kerran päivässä. "
+
+msgctxt "Hakuvahti already confirmed"
+msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
+msgstr "Voit perua tilauksen linkillä, jonka saat jokaisen ilmoituksen mukana. Voit koska tahansa tilata uusia hakuvahteja."
+
+# Hakuvahti renew context
+
+msgctxt "Hakuvahti renew"
+msgid "Renewing saved search"
+msgstr "Hakuvahdin tilauksen jatkaminen"
+
+msgctxt "Hakuvahti renew"
+msgid "Please wait while the saved search is being renewed."
+msgstr "Hakuvahdin tilausta jatketaan, odota hetki."
+
+msgctxt "Hakuvahti renew"
+msgid "Renew saved search"
+msgstr "Jatka hakuvahdin tilausta"
+
+# Hakuvahti renew success context
+
+msgctxt "Hakuvahti renew success"
+msgid "Search renewed successfully"
+msgstr "Hakuvahdin tilauksen jatkaminen onnistui"
+
+msgctxt "Hakuvahti renew success"
+msgid "Your saved search has been renewed."
+msgstr "Hakuvahtisi tilausta on jatkettu."
+
+# Hakuvahti renew failure context
+
+msgctxt "Hakuvahti renew failure"
+msgid "Renewal failed"
+msgstr "Tilauksen jatkaminen epäonnistui"
+
+msgctxt "Hakuvahti renew failure"
+msgid "Renewing saved search failed. Please try again."
+msgstr "Hakuvahdin tilauksen jatkaminen epäonnistui. Yritä uudelleen."
+
+# Hakuvahti unsubscribe context
+
+msgctxt "Hakuvahti unsubscribe"
+msgid "Deleting saved search"
+msgstr "Hakuvahtia poistetaan"
+
+msgctxt "Hakuvahti unsubscribe"
+msgid "Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them."
+msgstr "Hakuvahtia poistetaan, odota hetki. Jos olet tehnyt muita hakuvahteja kaupungin verkkosivustolla, tämä ei poista niitä."
+
+msgctxt "Hakuvahti unsubscribe"
+msgid "Delete saved search"
+msgstr "Poista hakuvahti"
+
+# Hakuvahti unsubscribe success context
+
+msgctxt "Hakuvahti unsubscribe success"
+msgid "The search alert has been removed"
+msgstr "Hakuvahti on poistettu"
+
+msgctxt "Hakuvahti unsubscribe success"
+msgid "The search alert has now been removed."
+msgstr "Hakuvahti on nyt poistettu."
+
+msgctxt "Hakuvahti unsubscribe success"
+msgid "You can subscribe to new search alerts at any time."
+msgstr "Voit koska tahansa tilata uusia hakuvahteja."
+
+# Hakuvahti unsubscribe not found context
+
+msgctxt "Hakuvahti unsubscribe not found"
+msgid "Saved search not found"
+msgstr "Hakuvahtia ei löytynyt"
+
+msgctxt "Hakuvahti unsubscribe not found"
+msgid "Saved search was not found. It might be already removed."
+msgstr "Hakuvahtia ei löytynyt. Se on ehkä jo poistettu."
+
+# Hakuvahti unsubscribe failure context
+
+msgctxt "Hakuvahti unsubscribe failure"
+msgid "Search alert removal failed"
+msgstr "Hakuvahdin poistaminen epäonnistui"
+
+msgctxt "Hakuvahti unsubscribe failure"
+msgid "Search alert removal failed You can try removing the search alert again."
+msgstr "Hakuvahdin poistaminen epäonnistui. Voit kokeilla poistaa hakuvahdin uudelleen."
+
+# Hakuvahti flood context
+
+msgctxt "Hakuvahti flood"
+msgid "Too many requests"
+msgstr "Liian monta pyyntöä"
+
+msgctxt "Hakuvahti flood"
+msgid "Too many requests, please try again later."
+msgstr "Liian monta pyyntöä, yritä myöhemmin uudelleen."

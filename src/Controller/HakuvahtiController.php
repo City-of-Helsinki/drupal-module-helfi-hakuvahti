@@ -266,7 +266,7 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
       '#action_url' => $actionUrl,
       '#fields' => [
         ['type' => 'hidden', 'name' => 'id', 'value' => $id],
-        ['type' => 'text', 'name' => 'code', 'label' => $this->t('Code', options: ['context' => 'Hakuvahti confirm']), 'required' => TRUE],
+        ['type' => 'text', 'name' => 'code', 'label' => $this->t('Confirmation code', options: ['context' => 'Hakuvahti confirm']), 'required' => TRUE],
       ],
       '#cache' => [
         'contexts' => ['url.query_args:id'],
