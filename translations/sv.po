@@ -1,126 +1,167 @@
 msgid ""
 msgstr ""
 
-msgctxt "Hakuvahti"
-msgid "You can save more searches at any time."
-msgstr "Du kan när som helst beställa nya sökvakter."
-
-msgctxt "Hakuvahti"
-msgid "Search saved successfully"
-msgstr "Beställningen av sökvakten lyckades"
-
-msgctxt "Hakuvahti"
-msgid "You will receive email alerts about new search results up to once a day."
-msgstr "Du får information om nya träffar till din e-post högst en gång per dag."
-
-msgctxt "Hakuvahti"
-msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
-msgstr "Varje e-postmeddelande innehåller en annulleringslänk via vilken du kan sluta beställningen av denna sökvakt. Du kan när som helst beställa nya sökvakter."
-
-msgctxt "Hakuvahti"
-msgid "Each saved search is valid for 6 months."
-msgstr "En sökvakt är i kraft i sex månader."
-
-msgctxt "Hakuvahti"
-msgid "Confirmation of saved search failed"
-msgstr "Beställningen av sökvakten misslyckades"
-
-msgctxt "Hakuvahti"
-msgid "The confirmation of your saved search failed. You can try confirming your saved search again from your email."
-msgstr "Beställningen av sökvakten misslyckades. Du kan försöka bekräfta sökvakten på nytt via din e-post."
-
-msgctxt "Hakuvahti"
-msgid "Enabling saved search"
-msgstr "Aktiverar sökvakten"
-
-msgctxt "Hakuvahti"
-msgid "Please wait while the saved search is being enabled."
-msgstr "Vänligen vänta medan sökvakten aktiveras."
-
-msgctxt "Hakuvahti"
-msgid "Saved search already confirmed"
-msgstr "Sökvakten har redan bekräftats"
-
-msgctxt "Hakuvahti"
-msgid "You have already confirmed this saved search."
-msgstr "Du har redan bekräftat denna sökvakt."
-
-msgctxt "Hakuvahti"
-msgid "You will receive email alerts about new search results up to once a day."
-msgstr "Du får information om nya träffar till din e-post högst en gång per dag."
-
-msgctxt "Hakuvahti"
-msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
-msgstr "Varje e-postmeddelande innehåller en annulleringslänk via vilken du kan sluta beställningen av denna sökvakt. Du kan när som helst beställa nya sökvakter."
-
-msgctxt "Hakuvahti"
-msgid "Renewing saved search"
-msgstr "Förnyar sökvakten"
-
-msgctxt "Hakuvahti"
-msgid "Please wait while the saved search is being renewed."
-msgstr "Vänta medan sökvakten förnyas."
-
-msgctxt "Hakuvahti"
-msgid "Renew saved search"
-msgstr "Fortsätt beväkningen"
-
-msgctxt "Hakuvahti"
-msgid "Search renewed successfully"
-msgstr "Sökvakten förnyades"
-
-msgctxt "Hakuvahti"
-msgid "Your saved search has been renewed."
-msgstr "Din sökvakt har förnyats."
-
-msgctxt "Hakuvahti"
-msgid "Renewal failed"
-msgstr "Sökvakten förnyades inte"
-
-msgctxt "Hakuvahti"
-msgid "Renewing saved search failed. Please try again."
-msgstr "Det gick inte att förnya sökvakten. Försök på nytt."
-
-msgctxt "Hakuvahti"
-msgid "Deleting saved search"
-msgstr "Tar bort sökvakten"
-
-msgctxt "Hakuvahti"
-msgid "Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them."
-msgstr "Vänligen vänta medan sökvakten tas bort. Om du har skapat andra sökvakter på stadens webbplats tar denna åtgärd inte bort dem."
-
-msgctxt "Hakuvahti"
-msgid "Delete saved search"
-msgstr "Radera sökvakten"
-
-msgctxt "Hakuvahti"
-msgid "Failed to delete saved search"
-msgstr "Raderingen av sökvakten misslyckades"
-
-msgctxt "Hakuvahti"
-msgid "Failed to delete saved search. You can try deleting the saved search again from your email."
-msgstr "Raderingen av sökvakten misslyckades. Du kan försöka radera sökvakten på nytt via din e-post."
-
-msgctxt "Hakuvahti"
-msgid "Saved search deleted"
-msgstr "Sökvakten har raderats"
-
-msgctxt "Hakuvahti"
-msgid "The saved search was successfully deleted."
-msgstr "Sökvakten har nu raderats."
-
-msgctxt "Hakuvahti"
-msgid "You can save more searches at any time."
-msgstr "Du kan när som helst beställa nya sökvakter."
-
-msgctxt "Hakuvahti"
-msgid "Save a new search for jobs"
-msgstr "Beställ en ny sökvakt för lediga jobb"
-
-msgctxt "Hakuvahti"
 msgid "Saved search confirmation"
 msgstr "Bekräftelse av sökvakten"
 
-msgctxt "Hakuvahti"
 msgid "Saved search deletion"
 msgstr "Radering av sökvakten"
+
+msgid "Renew saved search"
+msgstr "Fortsätt beväkningen"
+
+# Hakuvahti confirm context
+
+msgctxt "Hakuvahti confirm"
+msgid "Confirm saved search"
+msgstr "Bekräfta sökvakten"
+
+msgctxt "Hakuvahti confirm"
+msgid "Please enter the confirmation code that you received by SMS."
+msgstr "Ange bekräftelsekoden som du fått per sms."
+
+msgctxt "Hakuvahti confirm"
+msgid "Enabling saved search"
+msgstr "Aktiverar sökvakten"
+
+msgctxt "Hakuvahti confirm"
+msgid "Please wait while the saved search is being enabled."
+msgstr "Vänligen vänta medan sökvakten aktiveras."
+
+msgctxt "Hakuvahti confirm"
+msgid "Confirmation code"
+msgstr "Bekräftelsekoden"
+
+# Hakuvahti confirm success context
+
+msgctxt "Hakuvahti confirm success"
+msgid "Search alert subscription successful"
+msgstr "Beställningen av sökvakten lyckades"
+
+msgctxt "Hakuvahti confirm success"
+msgid "You will be notified of new search matches no more than once a day."
+msgstr "Du får information om nya träffar till din e-post högst en gång per dag."
+
+msgctxt "Hakuvahti confirm success"
+msgid "You can cancel your subscription using the link sent with each notification."
+msgstr "Varje meddelande innehåller en annulleringslänk via vilken du kan sluta beställningen av denna sökvakt. Du kan när som helst beställa nya sökvakter."
+
+msgctxt "Hakuvahti confirm success"
+msgid "You can subscribe to new search alerts at any time. The alerts are valid for 12 months."
+msgstr "Du kan när som helst beställa nya sökvakter. Sökvakterna gäller i 12 månader."
+
+# Hakuvahti confirm failure context
+
+msgctxt "Hakuvahti confirm failure"
+msgid "Search alert confirmation failed"
+msgstr "Beställningen av sökvakten misslyckades"
+
+msgctxt "Hakuvahti confirm failure"
+msgid "Your search alert could not be confirmed. You can try confirming the search alert again."
+msgstr "Beställningen av sökvakten misslyckades. Du kan försöka bekräfta sökvakten på nytt."
+
+# Hakuvahti already confirmed context
+
+msgctxt "Hakuvahti already confirmed"
+msgid "You have already confirmed this search alert."
+msgstr "Sökvakten har redan bekräftats"
+
+msgctxt "Hakuvahti already confirmed"
+msgid "You will receive email alerts about new search results up to once a day."
+msgstr "Du får information om nya träffar högst en gång om dagen."
+
+msgctxt "Hakuvahti already confirmed"
+msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
+msgstr "Du kan avsluta din beställning via en länk som finns i varje meddelande. Du kan när som helst beställa nya sökvakter."
+
+# Hakuvahti renew context
+
+msgctxt "Hakuvahti renew"
+msgid "Renewing saved search"
+msgstr "Förnyar sökvakten"
+
+msgctxt "Hakuvahti renew"
+msgid "Please wait while the saved search is being renewed."
+msgstr "Vänta medan sökvakten förnyas."
+
+msgctxt "Hakuvahti renew"
+msgid "Renew saved search"
+msgstr "Fortsätt beväkningen"
+
+# Hakuvahti renew success context
+
+msgctxt "Hakuvahti renew success"
+msgid "Search renewed successfully"
+msgstr "Sökvakten förnyades"
+
+msgctxt "Hakuvahti renew success"
+msgid "Your saved search has been renewed."
+msgstr "Din sökvakt har förnyats."
+
+# Hakuvahti renew failure context
+
+msgctxt "Hakuvahti renew failure"
+msgid "Renewal failed"
+msgstr "Sökvakten förnyades inte"
+
+msgctxt "Hakuvahti renew failure"
+msgid "Renewing saved search failed. Please try again."
+msgstr "Det gick inte att förnya sökvakten. Försök på nytt."
+
+# Hakuvahti unsubscribe context
+
+msgctxt "Hakuvahti unsubscribe"
+msgid "Deleting saved search"
+msgstr "Tar bort sökvakten"
+
+msgctxt "Hakuvahti unsubscribe"
+msgid "Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them."
+msgstr "Vänligen vänta medan sökvakten tas bort. Om du har skapat andra sökvakter på stadens webbplats tar denna åtgärd inte bort dem."
+
+msgctxt "Hakuvahti unsubscribe"
+msgid "Delete saved search"
+msgstr "Radera sökvakten"
+
+# Hakuvahti unsubscribe success context
+
+msgctxt "Hakuvahti unsubscribe success"
+msgid "The search alert has been removed"
+msgstr "Sökvakten har raderats"
+
+msgctxt "Hakuvahti unsubscribe success"
+msgid "The search alert has now been removed."
+msgstr "Sökvakten har nu raderats."
+
+msgctxt "Hakuvahti unsubscribe success"
+msgid "You can subscribe to new search alerts at any time."
+msgstr "Du kan när som helst beställa nya sökvakter."
+
+# Hakuvahti unsubscribe not found context
+
+msgctxt "Hakuvahti unsubscribe not found"
+msgid "Saved search not found"
+msgstr "Sökvakten hittades inte"
+
+msgctxt "Hakuvahti unsubscribe not found"
+msgid "Saved search was not found. It might be already removed."
+msgstr "Sökvakten hittades inte. Den kan redan ha tagits bort."
+
+# Hakuvahti unsubscribe failure context
+
+msgctxt "Hakuvahti unsubscribe failure"
+msgid "Search alert removal failed"
+msgstr "Raderingen av sökvakten misslyckades"
+
+msgctxt "Hakuvahti unsubscribe failure"
+msgid "Search alert removal failed You can try removing the search alert again."
+msgstr "Raderingen av sökvakten misslyckades. Du kan försöka radera sökvakten på nytt."
+
+# Hakuvahti flood context
+
+msgctxt "Hakuvahti flood"
+msgid "Too many requests"
+msgstr "För många förfrågningar"
+
+msgctxt "Hakuvahti flood"
+msgid "Too many requests, please try again later."
+msgstr "För många förfrågningar, försök igen senare."

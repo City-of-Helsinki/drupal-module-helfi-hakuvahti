@@ -38,18 +38,24 @@ interface HakuvahtiInterface {
   public function unsubscribe(string $subscriptionHash, string $subscriptionId): void;
 
   /**
-   * Get hakuvahti subscription status.
-   *
-   * @param string $subscriptionHash
-   *   The subscription hash.
-   * @param string $subscriptionId
-   *   The subscription ID.
-   *
-   * @return string|null
-   *   The subscription status or NULL if not found.
+   * Confirm SMS subscription.
    *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  public function getStatus(string $subscriptionHash, string $subscriptionId): ?string;
+  public function confirmSms(string $subscriptionId, string $code): void;
+
+  /**
+   * Renew SMS subscription.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function renewSms(string $subscriptionId): void;
+
+  /**
+   * Delete SMS subscription.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function deleteSms(string $subscriptionId): void;
 
 }

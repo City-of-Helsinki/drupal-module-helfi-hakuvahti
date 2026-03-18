@@ -7,9 +7,9 @@ namespace Drupal\helfi_hakuvahti;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Hakuvahti API client.
@@ -35,14 +35,28 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
    * {@inheritdoc}
    */
   public function confirm(string $subscriptionHash, string $subscriptionId): void {
-    $this->makeRequest('GET', "/subscription/confirm/{$subscriptionId}/{$subscriptionHash}");
+    try {
+      $this->makeRequest('POST', "/subscription/confirm/{$subscriptionId}/{$subscriptionHash}");
+    }
+    catch (HakuvahtiException $e) {
+      $previous = $e->getPrevious();
+
+      // Rewrite the exception type if the subscription is already confirmed.
+      if ($previous instanceof BadResponseException) {
+        if ($previous->getResponse()->getStatusCode() === 409) {
+          throw new HakuvahtiAlreadyConfirmedException("Hakuvahti already confirmed", $e->getCode(), previous: $e);
+        }
+      }
+
+      throw $e;
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function renew(string $subscriptionHash, string $subscriptionId): void {
-    $this->makeRequest('GET', "/subscription/renew/{$subscriptionId}/{$subscriptionHash}");
+    $this->makeRequest('POST', "/subscription/renew/{$subscriptionId}/{$subscriptionHash}");
   }
 
   /**
@@ -55,20 +69,40 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   /**
    * {@inheritdoc}
    */
-  public function getStatus(string $subscriptionHash, string $subscriptionId): ?string {
+  public function confirmSms(string $subscriptionId, string $code): void {
     try {
-      $response = $this->makeRequest('GET', "/subscription/status/{$subscriptionId}/{$subscriptionHash}");
+      $this->makeRequest('POST', "/subscription/sms/confirm/$subscriptionId", [
+        RequestOptions::JSON => [
+          'code' => $code,
+        ],
+      ]);
     }
-    catch (HakuvahtiException $exception) {
-      // 404 means subscription not found.
-      if ($exception->getCode() === 404) {
-        return NULL;
-      }
-      throw $exception;
-    }
+    catch (HakuvahtiException $e) {
+      $previous = $e->getPrevious();
 
-    $data = json_decode($response->getBody()->getContents(), TRUE);
-    return $data['subscriptionStatus'] ?? NULL;
+      // Rewrite the exception type if the subscription is already confirmed.
+      if ($previous instanceof BadResponseException) {
+        if ($previous->getResponse()->getStatusCode() === 409) {
+          throw new HakuvahtiAlreadyConfirmedException("Hakuvahti already confirmed", $e->getCode(), previous: $e);
+        }
+      }
+
+      throw $e;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function renewSms(string $subscriptionId): void {
+    $this->makeRequest('POST', "/subscription/sms/renew/$subscriptionId");
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function deleteSms(string $subscriptionId): void {
+    $this->makeRequest('DELETE', "/subscription/sms/delete/$subscriptionId");
   }
 
   /**
@@ -76,7 +110,7 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
    *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  private function makeRequest(string $method, string $url, array $options = []): ResponseInterface {
+  private function makeRequest(string $method, string $url, array $options = []): void {
     $settings = $this->configFactory->get('helfi_hakuvahti.settings');
     if (!$baseUrl = $settings->get('base_url')) {
       throw new HakuvahtiException('Hakuvahti base url is not configured.');
@@ -85,11 +119,9 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
     $apiKey = $settings->get('api_key');
 
     try {
-      return $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
+      $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
         RequestOptions::HEADERS => [
           'Authorization' => "api-key $apiKey",
-          // @todo remove this when we have fully migrated to new Hakuvahti.
-          'token' => '123',
         ],
         RequestOptions::TIMEOUT => 5,
       ], $options));

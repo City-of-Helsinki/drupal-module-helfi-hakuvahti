@@ -7,5 +7,21 @@
 {% endif %}
 
 <form {{ attributes }} method="post" action="{{ action_url }}">
-  <button type="submit" data-hds-component="button">{{ button_text }}</button>
+  {% for field in fields %}
+    {% if field.type == 'hidden' %}
+      <input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
+    {% else %}
+      <div class="hakuvahti-form__field hds-text-input">
+        {% if field.label %}
+          <label class="hds-text-input__label" for="hakuvahti-{{ field.name }}">{{ field.label }}{% if field.required %} *{% endif %}</label>
+        {% endif %}
+        <div class="hds-text-input__input-wrapper">
+          <input class="hds-text-input__input" type="{{ field.type|default('text') }}" id="hakuvahti-{{ field.name }}" name="{{ field.name }}" value="{{ field.value|default('') }}"{% if field.required %} required{% endif %}>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+  <div class="form-actions">
+    <button type="submit" data-hds-component="button" class="form-submit">{{ button_text }}</button>
+  </div>
 </form>
