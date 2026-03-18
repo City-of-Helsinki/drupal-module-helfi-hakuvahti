@@ -105,7 +105,7 @@ final readonly class HakuvahtiRequest {
       'site_id' => $this->siteId,
       'query' => $this->query,
       'elastic_query' => $this->elasticQuery,
-      'user_data_in_atv' => $this->elasticQueryAtv,
+      'elastic_query_atv' => $this->elasticQueryAtv,
       'search_description' => $this->searchDescription,
     ];
   }
