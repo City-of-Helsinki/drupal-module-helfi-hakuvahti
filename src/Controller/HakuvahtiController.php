@@ -12,17 +12,16 @@ use Drupal\Core\Url;
 use Drupal\helfi_hakuvahti\HakuvahtiAlreadyConfirmedException;
 use Drupal\helfi_hakuvahti\HakuvahtiException;
 use Drupal\helfi_hakuvahti\HakuvahtiInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Controller for handling Hakuvahti confirmations and unsubscriptions.
  */
-final class HakuvahtiController extends ControllerBase implements LoggerAwareInterface {
+final class HakuvahtiController extends ControllerBase {
 
   use StringTranslationTrait;
-  use LoggerAwareTrait;
 
   private const string SMS_FLOOD_EVENT = 'helfi_hakuvahti.sms_form';
   private const int SMS_FLOOD_THRESHOLD = 10;
@@ -31,6 +30,8 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
   public function __construct(
     protected readonly HakuvahtiInterface $hakuvahti,
     protected readonly FloodInterface $flood,
+    #[Autowire(service: 'logger.channel.helfi_hakuvahti')]
+    protected readonly LoggerInterface $logger,
   ) {
   }
 
@@ -93,7 +94,7 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
         default => 'error',
       };
 
-      $this->logger?->{$logLevel}('Hakuvahti confirmation request failed: ' . $exception->getMessage());
+      $this->logger->{$logLevel}('Hakuvahti confirmation request failed: ' . $exception->getMessage());
     }
 
     return $this->confirmErrorResponse();
@@ -148,7 +149,7 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
       // * Submission has been deleted after it expired.
       // * Submission does not exist.
       $logLevel = $exception->getCode() === 404 ? 'info' : 'error';
-      $this->logger?->{$logLevel}('Hakuvahti renewal request failed: ' . $exception->getMessage());
+      $this->logger->{$logLevel}('Hakuvahti renewal request failed: ' . $exception->getMessage());
     }
 
     return [
@@ -220,7 +221,7 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
         ];
       }
 
-      $this->logger?->error('Hakuvahti unsubscribe request failed: ' . $exception->getMessage());
+      $this->logger->error('Hakuvahti unsubscribe request failed: ' . $exception->getMessage());
     }
 
     return [
@@ -310,7 +311,7 @@ final class HakuvahtiController extends ControllerBase implements LoggerAwareInt
       return $this->alreadyConfirmedResponse();
     }
     catch (HakuvahtiException $e) {
-      $this->logger?->error('Hakuvahti SMS request failed: ' . $e->getMessage());
+      $this->logger->error('Hakuvahti SMS request failed: ' . $e->getMessage());
     }
 
     return [
