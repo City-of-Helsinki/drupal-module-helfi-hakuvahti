@@ -20,6 +20,10 @@ final readonly class HakuvahtiRequest {
     'searchDescription',
   ];
 
+  private const array REQUIRED_VALUES = [
+    'elasticQuery',
+  ];
+
   /**
    * The email address.
    */
@@ -72,6 +76,12 @@ final readonly class HakuvahtiRequest {
     foreach (self::REQUIRED_FIELDS as $fieldName) {
       if (!isset($requestData[$fieldName])) {
         throw new \InvalidArgumentException("Request is missing field: $fieldName");
+      }
+    }
+
+    foreach (self::REQUIRED_VALUES as $fieldName) {
+      if (empty($requestData[$fieldName])) {
+        throw new \InvalidArgumentException("Required field value is empty: $fieldName");
       }
     }
 
