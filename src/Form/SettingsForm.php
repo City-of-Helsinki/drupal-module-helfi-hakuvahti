@@ -35,12 +35,14 @@ class SettingsForm extends ConfigFormBase {
       '#title' => $this->t('Hakuvahti terms of service URL'),
       '#config_target' => 'helfi_hakuvahti.settings:hakuvahti_tos_link_url',
       '#description' => $this->t('URL for the webpage or pdf to the Hakuvahti terms of service.'),
+      '#maxlength' => 1024,
     ];
 
     $form['settings']['hakuvahti_instructions_link_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('More detailed instructions on how to use saved searches'),
       '#config_target' => 'helfi_hakuvahti.settings:hakuvahti_instructions_link_url',
+      '#maxlength' => 1024,
     ];
 
     return parent::buildForm($form, $form_state);
