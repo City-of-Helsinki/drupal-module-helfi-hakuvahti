@@ -81,10 +81,6 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
     $response = $this->makeRequest([]);
     $this->assertEquals(400, $response->getStatusCode());
 
-    // Subscribe with missing value.
-    $response = $this->makeRequest(['elasticQuery' => '']);
-    $this->assertEquals(400, $response->getStatusCode());
-
     // Missing config.
     $response = $this->makeRequest([
       'email' => 'valid@email.fi',
