@@ -66,6 +66,10 @@ msgstr "Hakuvahdin vahvistus epäonnistui. Voit kokeilla vahvistaa hakuvahdin uu
 # Hakuvahti already confirmed context
 
 msgctxt "Hakuvahti already confirmed"
+msgid "This search alert has already been confirmed."
+msgstr "Hakuvahti on jo vahvistettu"
+
+msgctxt "Hakuvahti already confirmed"
 msgid "You have already confirmed this search alert."
 msgstr "Hakuvahti on jo vahvistettu"
 
