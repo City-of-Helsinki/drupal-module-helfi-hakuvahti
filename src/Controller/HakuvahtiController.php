@@ -384,7 +384,7 @@ final class HakuvahtiController extends ControllerBase {
   private function alreadyConfirmedResponse(): array {
     return [
       '#theme' => 'hakuvahti_confirmation',
-      '#title' => $this->t('You have already confirmed this search alert.', options: ['context' => 'Hakuvahti already confirmed']),
+      '#title' => $this->t('This search alert has already been confirmed.', options: ['context' => 'Hakuvahti already confirmed']),
       '#message' => [
         $this->t('You have already confirmed this search alert.', options: ['context' => 'Hakuvahti already confirmed']),
         $this->t('You will receive email alerts about new search results up to once a day.', options: ['context' => 'Hakuvahti already confirmed']),
