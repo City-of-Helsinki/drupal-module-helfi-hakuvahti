@@ -127,7 +127,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
   }
 
   /**
-   * Tests confirm route GET with empty or missing hash/subscription shows error.
+   * Tests confirm GET with empty or missing hash/subscription shows error.
    */
   public function testConfirmWithEmptyParamsShowsError(): void {
     $this->setupHakuvahtiConfig();
