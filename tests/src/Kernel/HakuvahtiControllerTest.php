@@ -127,6 +127,31 @@ class HakuvahtiControllerTest extends KernelTestBase {
   }
 
   /**
+   * Tests confirm route GET with empty or missing hash/subscription shows error.
+   */
+  public function testConfirmWithEmptyParamsShowsError(): void {
+    $this->setupHakuvahtiConfig();
+    $this->setUpCurrentUser(permissions: ['access content']);
+
+    $cases = [
+      // Exact Sentry scenario: both params present but empty.
+      ['hash' => '', 'subscription' => ''],
+      // Only hash missing.
+      ['hash' => '', 'subscription' => 'abc'],
+      // Only subscription missing.
+      ['hash' => 'abc', 'subscription' => ''],
+      // Neither param present.
+      [],
+    ];
+
+    foreach ($cases as $query) {
+      $response = $this->makeRequest('GET', 'helfi_hakuvahti.confirm', $query);
+      $this->assertEquals(200, $response->getStatusCode());
+      $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?? '');
+    }
+  }
+
+  /**
    * Tests SMS confirm route GET renders the form.
    */
   public function testSmsConfirmGetRendersForm(): void {
