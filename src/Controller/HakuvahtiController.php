@@ -52,6 +52,10 @@ final class HakuvahtiController extends ControllerBase {
     $hash = $request->query->get('hash');
     $subscription = $request->query->get('subscription');
 
+    if (!$hash || !$subscription) {
+      return $this->confirmErrorResponse() + ['#cache' => ['contexts' => ['url']]];
+    }
+
     if ($request->isMethod('POST')) {
       return $this->handleConfirmFormSubmission($hash, $subscription);
     }
