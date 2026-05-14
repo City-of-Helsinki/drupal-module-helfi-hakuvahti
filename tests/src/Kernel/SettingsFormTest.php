@@ -6,8 +6,11 @@ namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
+use Drupal\Core\Language\Language;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\helfi_hakuvahti\Form\SettingsForm;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\language\ConfigurableLanguageManagerInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
@@ -21,7 +24,7 @@ class SettingsFormTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['helfi_hakuvahti'];
+  protected static $modules = ['helfi_hakuvahti', 'language'];
 
   /**
    * {@inheritdoc}
@@ -48,6 +51,47 @@ class SettingsFormTest extends KernelTestBase {
     $config = $this->config('helfi_hakuvahti.settings');
     $this->assertEquals('https://example.com/tos', $config->get('hakuvahti_tos_link_url'));
     $this->assertEquals('https://example.com/instructions', $config->get('hakuvahti_instructions_link_url'));
+  }
+
+  /**
+   * Tests that non-default language saves to language override.
+   */
+  public function testSubmitSavesToLanguageOverride(): void {
+    $realManager = $this->container->get('language_manager');
+    assert($realManager instanceof ConfigurableLanguageManagerInterface);
+
+    // Get the real override object so saves go through to actual storage.
+    $fiOverride = $realManager->getLanguageConfigOverride('fi', 'helfi_hakuvahti.settings');
+
+    $languageManager = $this->prophesize(ConfigurableLanguageManagerInterface::class);
+    $languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
+      ->willReturn(new Language(['id' => 'fi']));
+    $languageManager->getDefaultLanguage()
+      ->willReturn(new Language(['id' => 'en']));
+    $languageManager->getLanguageConfigOverride('fi', 'helfi_hakuvahti.settings')
+      ->willReturn($fiOverride);
+
+    $this->container->set('language_manager', $languageManager->reveal());
+
+    $form_state = new FormState();
+    $form_state->setValues([
+      'hakuvahti_tos_link_url' => 'https://example.com/tos-fi',
+      'hakuvahti_instructions_link_url' => 'https://example.com/instructions-fi',
+    ]);
+
+    $this->container->get(FormBuilderInterface::class)
+      ->submitForm(SettingsForm::class, $form_state);
+
+    $this->assertEmpty($form_state->getErrors());
+
+    // Finnish override should have the submitted values.
+    $this->assertEquals('https://example.com/tos-fi', $fiOverride->get('hakuvahti_tos_link_url'));
+    $this->assertEquals('https://example.com/instructions-fi', $fiOverride->get('hakuvahti_instructions_link_url'));
+
+    // Base config should be unchanged.
+    $config = $this->config('helfi_hakuvahti.settings');
+    $this->assertEquals('', $config->get('hakuvahti_tos_link_url'));
+    $this->assertEquals('', $config->get('hakuvahti_instructions_link_url'));
   }
 
 }
