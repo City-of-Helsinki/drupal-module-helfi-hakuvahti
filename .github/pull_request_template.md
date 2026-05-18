@@ -9,7 +9,7 @@
 * Make sure your instance is up and running on latest dev-branch
   * `git checkout dev && git pull origin dev`
   * `make fresh`
-* Update the Helfi Platform config
+* Update the Helfi Hakuvahti
   * `composer require drupal/helfi_hakuvahti:dev-UHF-0000_insert_correct_branch`
 * Run code updates
   * `composer install`
