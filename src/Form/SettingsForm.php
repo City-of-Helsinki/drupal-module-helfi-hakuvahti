@@ -55,7 +55,7 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->getLanguageConfig();
 
     $form['settings']['hakuvahti_tos_link_url'] = [
-      '#type' => 'textfield',
+      '#type' => 'url',
       '#title' => $this->t('Hakuvahti terms of service URL'),
       '#default_value' => $config->get('hakuvahti_tos_link_url'),
       '#description' => $this->t('URL for the webpage or pdf to the Hakuvahti terms of service.'),
@@ -63,7 +63,7 @@ class SettingsForm extends ConfigFormBase {
     ];
 
     $form['settings']['hakuvahti_instructions_link_url'] = [
-      '#type' => 'textfield',
+      '#type' => 'url',
       '#title' => $this->t('More detailed instructions on how to use saved searches'),
       '#default_value' => $config->get('hakuvahti_instructions_link_url'),
       '#maxlength' => 1024,
