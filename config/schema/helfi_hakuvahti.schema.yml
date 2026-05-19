@@ -22,11 +22,11 @@ helfi_hakuvahti.settings:
       type: string
 
     hakuvahti_tos_link_url:
-      type: label
+      type: text
       label: 'Hakuvahti terms of service URL'
       translatable: true
     hakuvahti_instructions_link_url:
-      type: label
+      type: text
       label: 'Hakuvahti detailed instructions link URL'
       translatable: true
 
