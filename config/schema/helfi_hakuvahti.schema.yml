@@ -11,6 +11,94 @@ helfi_hakuvahti.config.*:
     site_id:
       type: string
       label: 'Site ID'
+    confirm_success_title:
+      type: text
+      label: 'Confirm success title'
+      translatable: true
+    confirm_success_body:
+      type: text
+      label: 'Confirm success body'
+      translatable: true
+    confirm_failure_title:
+      type: text
+      label: 'Confirm failure title'
+      translatable: true
+    confirm_failure_body:
+      type: text
+      label: 'Confirm failure body'
+      translatable: true
+    already_confirmed_title:
+      type: text
+      label: 'Already confirmed title'
+      translatable: true
+    already_confirmed_body:
+      type: text
+      label: 'Already confirmed body'
+      translatable: true
+    renew_success_title:
+      type: text
+      label: 'Renew success title'
+      translatable: true
+    renew_success_body:
+      type: text
+      label: 'Renew success body'
+      translatable: true
+    renew_failure_title:
+      type: text
+      label: 'Renew failure title'
+      translatable: true
+    renew_failure_body:
+      type: text
+      label: 'Renew failure body'
+      translatable: true
+    unsubscribe_success_title:
+      type: text
+      label: 'Unsubscribe success title'
+      translatable: true
+    unsubscribe_success_body:
+      type: text
+      label: 'Unsubscribe success body'
+      translatable: true
+    unsubscribe_not_found_title:
+      type: text
+      label: 'Unsubscribe not found title'
+      translatable: true
+    unsubscribe_not_found_body:
+      type: text
+      label: 'Unsubscribe not found body'
+      translatable: true
+    unsubscribe_failure_title:
+      type: text
+      label: 'Unsubscribe failure title'
+      translatable: true
+    unsubscribe_failure_body:
+      type: text
+      label: 'Unsubscribe failure body'
+      translatable: true
+    confirm_processing_title:
+      type: text
+      label: 'Confirm processing title'
+      translatable: true
+    confirm_processing_message:
+      type: text
+      label: 'Confirm processing message'
+      translatable: true
+    renew_processing_title:
+      type: text
+      label: 'Renew processing title'
+      translatable: true
+    renew_processing_message:
+      type: text
+      label: 'Renew processing message'
+      translatable: true
+    unsubscribe_processing_title:
+      type: text
+      label: 'Unsubscribe processing title'
+      translatable: true
+    unsubscribe_processing_message:
+      type: text
+      label: 'Unsubscribe processing message'
+      translatable: true
 
 helfi_hakuvahti.settings:
   type: config_object
