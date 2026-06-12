@@ -48,8 +48,12 @@ final class HakuvahtiController extends ControllerBase {
         $config,
         'helfi_hakuvahti.confirm',
         $this->hakuvahti->confirmSms(...),
-        $this->t('Confirm saved search', options: ['context' => 'Hakuvahti confirm']),
-        $this->t('Please enter the confirmation code that you received by SMS.', options: ['context' => 'Hakuvahti confirm']),
+        $this->resolveTitle($config, 'confirm_sms_title',
+          $this->t('Confirm saved search', options: ['context' => 'Hakuvahti confirm']),
+        ),
+        $this->resolveBody($config, 'confirm_sms_message',
+          $this->t('Please enter the confirmation code that you received by SMS.', options: ['context' => 'Hakuvahti confirm']),
+        ),
       );
     }
 
@@ -282,16 +286,20 @@ final class HakuvahtiController extends ControllerBase {
     ?HakuvahtiConfig $config,
     string $route,
     callable $callback,
-    TranslatableMarkup $title,
-    TranslatableMarkup $message,
+    string|TranslatableMarkup $title,
+    string|TranslatableMarkup|array $message,
   ): array {
     $id = $request->query->get('id', '');
     $actionUrl = Url::fromRoute($route, [], [
-      'query' => ['id' => $id],
+      'query' => array_filter(['id' => $id, 'site_id' => $request->query->get('site_id')]),
     ]);
 
+    $buttonText = $this->resolveTitle($config, 'confirm_sms_button',
+      $this->t('Confirm saved search', options: ['context' => 'Hakuvahti confirm']),
+    );
+
     if ($request->isMethod('POST')) {
-      return $this->handleSmsSubmission($request, $config, $id, $callback, $message, $title, $actionUrl);
+      return $this->handleSmsSubmission($request, $config, $id, $callback, $message, $buttonText, $actionUrl);
     }
 
     if (!$id) {
@@ -306,7 +314,7 @@ final class HakuvahtiController extends ControllerBase {
       '#theme' => 'hakuvahti_form',
       '#title' => $title,
       '#message' => $message,
-      '#button_text' => $title,
+      '#button_text' => $buttonText,
       '#action_url' => $actionUrl,
       '#fields' => [
         ['type' => 'hidden', 'name' => 'id', 'value' => $id],
@@ -331,8 +339,8 @@ final class HakuvahtiController extends ControllerBase {
     ?HakuvahtiConfig $config,
     string $id,
     callable $callback,
-    TranslatableMarkup $message,
-    TranslatableMarkup $buttonText,
+    string|TranslatableMarkup|array $message,
+    string|TranslatableMarkup $buttonText,
     Url $actionUrl,
   ): array {
     $code = $request->request->get('code', '');

@@ -111,6 +111,18 @@ helfi_hakuvahti.config.*:
       type: text
       label: 'Unsubscribe page title'
       translatable: true
+    confirm_sms_title:
+      type: text
+      label: 'Confirm SMS form title'
+      translatable: true
+    confirm_sms_message:
+      type: text
+      label: 'Confirm SMS form message'
+      translatable: true
+    confirm_sms_button:
+      type: text
+      label: 'Confirm SMS form button text'
+      translatable: true
 
 helfi_hakuvahti.settings:
   type: config_object

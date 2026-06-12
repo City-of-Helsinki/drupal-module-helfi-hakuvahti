@@ -42,10 +42,12 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
     'renew_processing_message',
     'unsubscribe_processing_title',
     'unsubscribe_processing_message',
-    'subscribe_page_title',
     'confirm_page_title',
     'renew_page_title',
     'unsubscribe_page_title',
+    'confirm_sms_title',
+    'confirm_sms_message',
+    'confirm_sms_button',
   ],
 )]
 class HakuvahtiConfig extends ConfigEntityBase {
@@ -90,6 +92,9 @@ class HakuvahtiConfig extends ConfigEntityBase {
   protected string $confirm_page_title = '';
   protected string $renew_page_title = '';
   protected string $unsubscribe_page_title = '';
+  protected string $confirm_sms_title = '';
+  protected string $confirm_sms_message = '';
+  protected string $confirm_sms_button = '';
 
   public function getSiteId(): string {
     return $this->site_id ?? '';
