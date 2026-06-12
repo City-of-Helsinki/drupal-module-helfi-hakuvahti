@@ -99,6 +99,18 @@ helfi_hakuvahti.config.*:
       type: text
       label: 'Unsubscribe processing message'
       translatable: true
+    confirm_page_title:
+      type: text
+      label: 'Confirm page title'
+      translatable: true
+    renew_page_title:
+      type: text
+      label: 'Renew page title'
+      translatable: true
+    unsubscribe_page_title:
+      type: text
+      label: 'Unsubscribe page title'
+      translatable: true
 
 helfi_hakuvahti.settings:
   type: config_object

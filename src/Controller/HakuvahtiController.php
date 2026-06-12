@@ -447,6 +447,39 @@ final class HakuvahtiController extends ControllerBase {
   }
 
   /**
+   * Title callback for the confirm route.
+   */
+  public function confirmTitle(Request $request): TranslatableMarkup|string {
+    return $this->resolveTitle(
+      $this->loadConfigBySiteId($request->query->get('site_id')),
+      'confirm_page_title',
+      $this->t('Saved search confirmation'),
+    );
+  }
+
+  /**
+   * Title callback for the renew route.
+   */
+  public function renewTitle(Request $request): TranslatableMarkup|string {
+    return $this->resolveTitle(
+      $this->loadConfigBySiteId($request->query->get('site_id')),
+      'renew_page_title',
+      $this->t('Renew saved search'),
+    );
+  }
+
+  /**
+   * Title callback for the unsubscribe route.
+   */
+  public function unsubscribeTitle(Request $request): TranslatableMarkup|string {
+    return $this->resolveTitle(
+      $this->loadConfigBySiteId($request->query->get('site_id')),
+      'unsubscribe_page_title',
+      $this->t('Saved search deletion'),
+    );
+  }
+
+  /**
    * Loads a HakuvahtiConfig entity matching the given site_id.
    */
   private function loadConfigBySiteId(?string $siteId): ?HakuvahtiConfig {
