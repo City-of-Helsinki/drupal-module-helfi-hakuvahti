@@ -72,6 +72,12 @@ final readonly class HakuvahtiRequest {
    */
   public string $searchDescription;
 
+  /**
+   * Constructs a HakuvahtiRequest.
+   *
+   * @param array<string, mixed> $requestData
+   *   Request payload from the frontend.
+   */
   public function __construct(array $requestData) {
     foreach (self::REQUIRED_FIELDS as $fieldName) {
       if (!isset($requestData[$fieldName])) {
@@ -99,13 +105,16 @@ final readonly class HakuvahtiRequest {
       throw new \InvalidArgumentException("Email must be a valid email address");
     }
 
-    if (strlen($this->searchDescription) > self::MAX_SEARCH_DESCRIPTION_LENGTH) {
+    if (\strlen($this->searchDescription) > self::MAX_SEARCH_DESCRIPTION_LENGTH) {
       throw new \InvalidArgumentException("Search description is too long.");
     }
   }
 
   /**
    * Return the data to be sent for hakuvahti services subscription endpoint.
+   *
+   * @return array<string, mixed>
+   *   Subscription payload.
    */
   public function getServiceRequestData(): array {
     return [

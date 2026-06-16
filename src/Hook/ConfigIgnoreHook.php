@@ -13,6 +13,9 @@ class ConfigIgnoreHook {
 
   /**
    * Implements hook_config_ignore_settings_alter().
+   *
+   * @param array<string> $settings
+   *   The config ignore settings.
    */
   #[Hook('config_ignore_settings_alter')]
   public static function alter(array &$settings): void {

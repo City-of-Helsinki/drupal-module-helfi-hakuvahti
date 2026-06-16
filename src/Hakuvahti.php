@@ -108,6 +108,13 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   /**
    * Make hakuvahti request.
    *
+   * @param string $method
+   *   HTTP method.
+   * @param string $url
+   *   Endpoint path.
+   * @param array<string, mixed> $options
+   *   Guzzle options.
+   *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
   private function makeRequest(string $method, string $url, array $options = []): void {

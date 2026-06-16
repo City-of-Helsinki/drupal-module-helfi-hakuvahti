@@ -38,6 +38,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles the confirmation of a saved search.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   public function confirm(Request $request): array {
     $config = $this->loadConfigBySiteId($request->query->get('site_id'));
@@ -95,6 +98,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles the activation form submission.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function handleConfirmFormSubmission(string $hash, string $subscription, ?HakuvahtiConfig $config): array {
     try {
@@ -119,6 +125,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles the renewal of a saved search.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   public function renew(Request $request): array {
     $config = $this->loadConfigBySiteId($request->query->get('site_id'));
@@ -146,8 +155,19 @@ final class HakuvahtiController extends ControllerBase {
       '#button_text' => $this->t('Renew saved search', options: ['context' => 'Hakuvahti renew']),
       '#autosubmit' => TRUE,
       '#action_url' => $id
-        ? Url::fromRoute('helfi_hakuvahti.renew', [], ['query' => array_filter(['id' => $id, 'site_id' => $request->query->get('site_id')])])
-        : Url::fromRoute('helfi_hakuvahti.renew', [], ['query' => array_filter(['hash' => $hash, 'subscription' => $subscription, 'site_id' => $request->query->get('site_id')])]),
+        ? Url::fromRoute('helfi_hakuvahti.renew', [], [
+          'query' => array_filter([
+            'id' => $id,
+            'site_id' => $request->query->get('site_id'),
+          ]),
+        ])
+        : Url::fromRoute('helfi_hakuvahti.renew', [], [
+          'query' => array_filter([
+            'hash' => $hash,
+            'subscription' => $subscription,
+            'site_id' => $request->query->get('site_id'),
+          ]),
+        ]),
       '#cache' => [
         'contexts' => ['url'],
       ],
@@ -156,6 +176,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles the renewal submission for both email and SMS.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function handleRenewSubmission(?HakuvahtiConfig $config, callable $action): array {
     try {
@@ -192,6 +215,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles the unsubscription from a saved search.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   public function unsubscribe(Request $request): array {
     $config = $this->loadConfigBySiteId($request->query->get('site_id'));
@@ -225,8 +251,19 @@ final class HakuvahtiController extends ControllerBase {
       '#button_text' => $this->t('Delete saved search', options: ['context' => 'Hakuvahti unsubscribe']),
       '#autosubmit' => TRUE,
       '#action_url' => $id
-        ? Url::fromRoute('helfi_hakuvahti.unsubscribe', [], ['query' => array_filter(['id' => $id, 'site_id' => $request->query->get('site_id')])])
-        : Url::fromRoute('helfi_hakuvahti.unsubscribe', [], ['query' => array_filter(['hash' => $hash, 'subscription' => $subscription, 'site_id' => $request->query->get('site_id')])]),
+        ? Url::fromRoute('helfi_hakuvahti.unsubscribe', [], [
+          'query' => array_filter([
+            'id' => $id,
+            'site_id' => $request->query->get('site_id'),
+          ]),
+        ])
+        : Url::fromRoute('helfi_hakuvahti.unsubscribe', [], [
+          'query' => array_filter([
+            'hash' => $hash,
+            'subscription' => $subscription,
+            'site_id' => $request->query->get('site_id'),
+          ]),
+        ]),
       '#cache' => [
         'contexts' => ['url'],
       ],
@@ -235,6 +272,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles the unsubscribe submission for both email and SMS.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function handleUnsubscribeSubmission(?HakuvahtiConfig $config, callable $action): array {
     try {
@@ -280,6 +320,22 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles an SMS subscription request.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request.
+   * @param \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig|null $config
+   *   The config entity.
+   * @param string $route
+   *   The route name.
+   * @param callable $callback
+   *   The action callback.
+   * @param string|\Drupal\Core\StringTranslation\TranslatableMarkup $title
+   *   The form title.
+   * @param string|\Drupal\Core\StringTranslation\TranslatableMarkup|array<mixed> $message
+   *   The form message.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function handleSmsRequest(
     Request $request,
@@ -333,6 +389,24 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Handles SMS form submission with flood protection.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request.
+   * @param \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig|null $config
+   *   The config entity.
+   * @param string $id
+   *   The subscription ID.
+   * @param callable $callback
+   *   The action callback.
+   * @param string|\Drupal\Core\StringTranslation\TranslatableMarkup|array<mixed> $message
+   *   The form message.
+   * @param string|\Drupal\Core\StringTranslation\TranslatableMarkup $buttonText
+   *   The submit button label.
+   * @param \Drupal\Core\Url $actionUrl
+   *   The form action URL.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function handleSmsSubmission(
     Request $request,
@@ -387,6 +461,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Returns the render array for a flood-limited response.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function tooManyRequestsResponse(): array {
     return [
@@ -407,6 +484,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Returns the render array for a successful confirmation.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function confirmSuccessResponse(?HakuvahtiConfig $config): array {
     return [
@@ -426,6 +506,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Returns the render array for a failed confirmation.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function confirmErrorResponse(?HakuvahtiConfig $config): array {
     return [
@@ -439,6 +522,9 @@ final class HakuvahtiController extends ControllerBase {
 
   /**
    * Returns the render array for an already confirmed subscription.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   private function alreadyConfirmedResponse(?HakuvahtiConfig $config): array {
     return [
@@ -513,6 +599,16 @@ final class HakuvahtiController extends ControllerBase {
    * Returns the custom body if set, otherwise the translated default.
    *
    * A non-empty body string is split on newlines into paragraphs.
+   *
+   * @param \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig|null $config
+   *   Hakuvahti configuration entity.
+   * @param string $key
+   *   Configuration key.
+   * @param \Drupal\Core\StringTranslation\TranslatableMarkup|array<mixed> $default
+   *   Default body value.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup|string|array<mixed>
+   *   Body text or array of paragraphs.
    */
   private function resolveBody(?HakuvahtiConfig $config, string $key, TranslatableMarkup|array $default): TranslatableMarkup|string|array {
     $custom = $config?->getConfirmationText($key) ?? '';
