@@ -105,7 +105,7 @@ final readonly class HakuvahtiRequest {
       throw new \InvalidArgumentException("Email must be a valid email address");
     }
 
-    if (\strlen($this->searchDescription) > self::MAX_SEARCH_DESCRIPTION_LENGTH) {
+    if (\mb_strlen($this->searchDescription) > self::MAX_SEARCH_DESCRIPTION_LENGTH) {
       throw new \InvalidArgumentException("Search description is too long.");
     }
   }
