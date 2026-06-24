@@ -11,3 +11,5 @@ services:
     class: Drupal\helfi_hakuvahti\Hakuvahti
 
   Drupal\helfi_hakuvahti\DrupalSettings: ~
+
+  Drupal\helfi_hakuvahti\Hook\BreadcrumbHook: ~
