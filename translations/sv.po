@@ -63,12 +63,12 @@ msgstr "Beställningen av sökvakten misslyckades. Du kan försöka bekräfta s�
 # Hakuvahti already confirmed context
 
 msgctxt "Hakuvahti already confirmed"
-msgid "This search alert has already been confirmed."
+msgid "This search alert has already been confirmed"
 msgstr "Sökvakten har redan bekräftats"
 
 msgctxt "Hakuvahti already confirmed"
 msgid "You have already confirmed this search alert."
-msgstr "Sökvakten har redan bekräftats"
+msgstr "Du har redan bekräftat denna Sökvakt."
 
 msgctxt "Hakuvahti already confirmed"
 msgid "You will receive email alerts about new search results up to once a day."

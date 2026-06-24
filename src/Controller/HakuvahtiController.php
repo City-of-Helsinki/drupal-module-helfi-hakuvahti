@@ -530,7 +530,7 @@ final class HakuvahtiController extends ControllerBase {
     return [
       '#theme' => 'hakuvahti_confirmation',
       '#title' => $this->resolveTitle($config, 'already_confirmed_title',
-        $this->t('This search alert has already been confirmed.', options: ['context' => 'Hakuvahti already confirmed']),
+        $this->t('This search alert has already been confirmed', options: ['context' => 'Hakuvahti already confirmed']),
       ),
       '#message' => $this->resolveBody($config, 'already_confirmed_body', [
         $this->t('You have already confirmed this search alert.', options: ['context' => 'Hakuvahti already confirmed']),
