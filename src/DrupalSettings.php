@@ -31,6 +31,9 @@ readonly class DrupalSettings {
 
   /**
    * Get settings as they should be exposed to JavaScript.
+   *
+   * @param array<string, mixed> $build
+   *   Render array.
    */
   public function applyTo(array &$build): void {
     $langcode = $this->languageManager

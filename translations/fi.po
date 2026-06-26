@@ -50,8 +50,8 @@ msgid "You can cancel your subscription using the link sent with each notificati
 msgstr "Voit perua tilauksen linkillä, jonka saat jokaisen ilmoituksen mukana."
 
 msgctxt "Hakuvahti confirm success"
-msgid "You can subscribe to new search alerts at any time. The alerts are valid for 12 months."
-msgstr "Voit koska tahansa tilata uusia hakuvahteja. Hakuvahti on voimassa 12 kuukautta."
+msgid "You can subscribe to new search alerts at any time. The alerts are valid for six months."
+msgstr "Voit koska tahansa tilata uusia hakuvahteja. Hakuvahti on voimassa kuusi kuukautta."
 
 # Hakuvahti confirm failure context
 
@@ -66,12 +66,12 @@ msgstr "Hakuvahdin vahvistus epäonnistui. Voit kokeilla vahvistaa hakuvahdin uu
 # Hakuvahti already confirmed context
 
 msgctxt "Hakuvahti already confirmed"
-msgid "This search alert has already been confirmed."
+msgid "This search alert has already been confirmed"
 msgstr "Hakuvahti on jo vahvistettu"
 
 msgctxt "Hakuvahti already confirmed"
 msgid "You have already confirmed this search alert."
-msgstr "Hakuvahti on jo vahvistettu"
+msgstr "Olet jo vahvistanut tämän hakuvahdin."
 
 msgctxt "Hakuvahti already confirmed"
 msgid "You will receive email alerts about new search results up to once a day."

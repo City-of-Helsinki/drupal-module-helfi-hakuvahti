@@ -21,6 +21,9 @@ class SettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @return array<string>
+   *   Config names.
    */
   protected function getEditableConfigNames() : array {
     return ['helfi_hakuvahti.settings'];
@@ -28,6 +31,14 @@ class SettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @param array<string, mixed> $form
+   *   Form render array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   *
+   * @return array<string, mixed>
+   *   Render array.
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
     $form['settings']['hakuvahti_tos_link_url'] = [

@@ -1,0 +1,85 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\helfi_hakuvahti\Hook;
+
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+
+/**
+ * Breadcrumb alterations for Hakuvahti routes.
+ */
+class BreadcrumbHook {
+
+  private const array ROUTE_TITLE_KEYS = [
+    'helfi_hakuvahti.confirm' => 'confirm_page_title',
+    'helfi_hakuvahti.renew' => 'renew_page_title',
+    'helfi_hakuvahti.unsubscribe' => 'unsubscribe_page_title',
+  ];
+
+  public function __construct(
+    private readonly EntityTypeManagerInterface $entityTypeManager,
+    private readonly RequestStack $requestStack,
+  ) {
+  }
+
+  /**
+   * Implements hook_system_breadcrumb_alter().
+   *
+   * Replaces the current page's breadcrumb segment title on Hakuvahti routes
+   * when a per-instance page title is configured on the matching config entity.
+   *
+   * easy_breadcrumb resolves titles from a synthetic Request that has no query
+   * parameters, so _title_callback never sees site_id and falls back to the
+   * default translation. This alter hook uses the real current request.
+   */
+  #[Hook('system_breadcrumb_alter')]
+  public function systemBreadcrumbAlter(Breadcrumb &$breadcrumb, RouteMatchInterface $routeMatch): void {
+    $routeName = $routeMatch->getRouteName();
+    if (!isset(self::ROUTE_TITLE_KEYS[$routeName])) {
+      return;
+    }
+
+    // Always add the cache context so the breadcrumb varies by site_id.
+    $breadcrumb->addCacheContexts(['url.query_args:site_id']);
+
+    $siteId = $this->requestStack->getCurrentRequest()?->query->get('site_id');
+    if (!$siteId) {
+      return;
+    }
+
+    /** @var \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig[] $entities */
+    $entities = $this->entityTypeManager
+      ->getStorage('hakuvahti_config')
+      ->loadByProperties(['site_id' => $siteId]);
+
+    if (!$entities) {
+      return;
+    }
+
+    $customTitle = reset($entities)->getConfirmationText(self::ROUTE_TITLE_KEYS[$routeName]);
+    if (!$customTitle) {
+      return;
+    }
+
+    $links = $breadcrumb->getLinks();
+    if (empty($links)) {
+      return;
+    }
+
+    // Replace the last link (current page segment) with the custom title.
+    // Breadcrumb::setLinks() throws if links are already set, so mutate the
+    // internal array in-place via reflection.
+    $lastKey = array_key_last($links);
+    $links[$lastKey] = Link::fromTextAndUrl($customTitle, $links[$lastKey]->getUrl());
+
+    $reflLinks = new \ReflectionProperty($breadcrumb, 'links');
+    $reflLinks->setValue($breadcrumb, $links);
+  }
+
+}
