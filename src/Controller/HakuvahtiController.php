@@ -452,7 +452,7 @@ final class HakuvahtiController extends ControllerBase {
         [
           'type' => 'text',
           'name' => 'code',
-          'label' => $this->t('Code', options: ['context' => 'Hakuvahti confirm']),
+          'label' => $this->t('Confirmation code', options: ['context' => 'Hakuvahti confirm']),
           'required' => TRUE,
         ],
       ],
