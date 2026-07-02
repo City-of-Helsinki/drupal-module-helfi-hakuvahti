@@ -21,12 +21,12 @@ msgid "Please enter the confirmation code that you received by SMS."
 msgstr "Ange bekräftelsekoden som du fått per sms."
 
 msgctxt "Hakuvahti confirm"
-msgid "Enabling saved search"
+msgid "Activating search alert"
 msgstr "Aktiverar sökvakten"
 
 msgctxt "Hakuvahti confirm"
-msgid "Please wait while the saved search is being enabled."
-msgstr "Vänligen vänta medan sökvakten aktiveras."
+msgid "Activating search alert subscription…"
+msgstr "Aktiverar sökvakten…"
 
 msgctxt "Hakuvahti confirm"
 msgid "Confirmation code"
@@ -115,12 +115,12 @@ msgstr "Det gick inte att förnya sökvakten. Försök på nytt."
 # Hakuvahti unsubscribe context
 
 msgctxt "Hakuvahti unsubscribe"
-msgid "Deleting saved search"
-msgstr "Tar bort sökvakten"
+msgid "Removing search alert"
+msgstr "Sökvakten raderas"
 
 msgctxt "Hakuvahti unsubscribe"
-msgid "Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them."
-msgstr "Vänligen vänta medan sökvakten tas bort. Om du har skapat andra sökvakter på stadens webbplats tar denna åtgärd inte bort dem."
+msgid "Removing search alert subscription…"
+msgstr "Raderar sökvakten…"
 
 msgctxt "Hakuvahti unsubscribe"
 msgid "Delete saved search"

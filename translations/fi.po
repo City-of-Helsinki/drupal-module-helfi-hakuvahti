@@ -24,12 +24,12 @@ msgid "Please enter the confirmation code that you received by SMS."
 msgstr "Syötä vahvistuskoodi, jonka sait tekstiviestillä."
 
 msgctxt "Hakuvahti confirm"
-msgid "Enabling saved search"
+msgid "Activating search alert"
 msgstr "Hakuvahtia aktivoidaan"
 
 msgctxt "Hakuvahti confirm"
-msgid "Please wait while the saved search is being enabled."
-msgstr "Hakuvahtia aktivoidaan, odota hetki."
+msgid "Activating search alert subscription…"
+msgstr "Hakuvahdin tilausta aktivoidaan…"
 
 msgctxt "Hakuvahti confirm"
 msgid "Confirmation code"
@@ -118,12 +118,12 @@ msgstr "Hakuvahdin tilauksen jatkaminen epäonnistui. Yritä uudelleen."
 # Hakuvahti unsubscribe context
 
 msgctxt "Hakuvahti unsubscribe"
-msgid "Deleting saved search"
+msgid "Removing search alert"
 msgstr "Hakuvahtia poistetaan"
 
 msgctxt "Hakuvahti unsubscribe"
-msgid "Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them."
-msgstr "Hakuvahtia poistetaan, odota hetki. Jos olet tehnyt muita hakuvahteja kaupungin verkkosivustolla, tämä ei poista niitä."
+msgid "Removing search alert subscription…"
+msgstr "Hakuvahdin tilausta poistetaan…"
 
 msgctxt "Hakuvahti unsubscribe"
 msgid "Delete saved search"
