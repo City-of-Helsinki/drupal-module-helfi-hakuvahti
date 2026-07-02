@@ -255,7 +255,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     // POST success.
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('renewed', $response->getContent() ?? '');
+    $this->assertStringContainsString('extended', $response->getContent() ?? '');
   }
 
   /**
@@ -349,7 +349,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
         'helfi_hakuvahti.renew',
         [
           ['GET', 'Extend your search alert subscription'],
-          ['POST', 'Search alert renewed successfully'],
+          ['POST', 'Search alert subscription has been extended'],
           ['POST', 'Search alert subscription could not be extended'],
           ['POST', 'Search alert subscription could not be extended'],
         ],
