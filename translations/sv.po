@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
 
-msgid "Saved search confirmation"
+msgid "Confirm search alert"
 msgstr "Bekräftelse av sökvakten"
 
-msgid "Saved search deletion"
+msgid "Remove search alert"
 msgstr "Radering av sökvakten"
 
-msgid "Renew saved search"
+msgid "Extend search alert"
 msgstr "Fortsätt beväkningen"
 
 # Hakuvahti confirm context
 
 msgctxt "Hakuvahti confirm"
-msgid "Confirm saved search"
+msgid "Confirm search alert"
 msgstr "Bekräfta sökvakten"
 
 msgctxt "Hakuvahti confirm"
@@ -75,42 +75,42 @@ msgid "You will receive email alerts about new search results up to once a day."
 msgstr "Du får information om nya träffar högst en gång om dagen."
 
 msgctxt "Hakuvahti already confirmed"
-msgid "Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time."
+msgid "Each email contains an unsubscribe link that you can use to unsubscribe from search alerts. You can subscribe to new search alert at any time."
 msgstr "Du kan avsluta din beställning via en länk som finns i varje meddelande. Du kan när som helst beställa nya sökvakter."
 
 # Hakuvahti renew context
 
 msgctxt "Hakuvahti renew"
-msgid "Renewing saved search"
-msgstr "Förnyar sökvakten"
+msgid "Extending your search alert subscription"
+msgstr "Förläng beställningen på sökvakten"
 
 msgctxt "Hakuvahti renew"
-msgid "Please wait while the saved search is being renewed."
-msgstr "Vänta medan sökvakten förnyas."
+msgid "Search alert subscription is being processed…"
+msgstr "Beställningen på sökvakten behandlas…"
 
 msgctxt "Hakuvahti renew"
-msgid "Renew saved search"
+msgid "Extend your search alert subscription"
 msgstr "Fortsätt beväkningen"
 
 # Hakuvahti renew success context
 
 msgctxt "Hakuvahti renew success"
-msgid "Search renewed successfully"
-msgstr "Sökvakten förnyades"
+msgid "Search alert subscription has been extended"
+msgstr "Beställningen på sökvakten fortsätter"
 
 msgctxt "Hakuvahti renew success"
-msgid "Your saved search has been renewed."
-msgstr "Din sökvakt har förnyats."
+msgid "Your search alert subscription has been successfully extended."
+msgstr "Din beställning på sökvakten har nu förlängts."
 
 # Hakuvahti renew failure context
 
 msgctxt "Hakuvahti renew failure"
-msgid "Renewal failed"
-msgstr "Sökvakten förnyades inte"
+msgid "Search alert subscription could not be extended"
+msgstr "Beställningen på sökvakten kunde inte förlängas"
 
 msgctxt "Hakuvahti renew failure"
-msgid "Renewing saved search failed. Please try again."
-msgstr "Det gick inte att förnya sökvakten. Försök på nytt."
+msgid "Search alert subscription could not be extended. It may have expired."
+msgstr "Beställningen på sökvakten kunde inte förlängas. Den har kanske löpt ut."
 
 # Hakuvahti unsubscribe context
 
@@ -123,7 +123,7 @@ msgid "Removing search alert subscription…"
 msgstr "Raderar sökvakten…"
 
 msgctxt "Hakuvahti unsubscribe"
-msgid "Delete saved search"
+msgid "Remove search alert"
 msgstr "Radera sökvakten"
 
 # Hakuvahti unsubscribe success context
@@ -143,12 +143,12 @@ msgstr "Du kan när som helst beställa nya sökvakter."
 # Hakuvahti unsubscribe not found context
 
 msgctxt "Hakuvahti unsubscribe not found"
-msgid "Saved search not found"
-msgstr "Sökvakten hittades inte"
+msgid "Unable to find search alert"
+msgstr "Ingen sökvakt hittades"
 
 msgctxt "Hakuvahti unsubscribe not found"
-msgid "Saved search was not found. It might be already removed."
-msgstr "Sökvakten hittades inte. Den kan redan ha tagits bort."
+msgid "Search alert is either no longer valid or it has been removed."
+msgstr "Beställningen på sökvakten är inte längre i kraft eller den har raderats."
 
 # Hakuvahti unsubscribe failure context
 
