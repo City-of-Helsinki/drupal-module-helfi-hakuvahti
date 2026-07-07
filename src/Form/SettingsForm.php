@@ -51,7 +51,7 @@ class SettingsForm extends ConfigFormBase {
 
     $form['settings']['hakuvahti_instructions_link_url'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('More detailed instructions on how to use saved searches'),
+      '#title' => $this->t('More detailed instructions on how to use search alerts'),
       '#config_target' => 'helfi_hakuvahti.settings:hakuvahti_instructions_link_url',
       '#maxlength' => 1024,
     ];

@@ -61,7 +61,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     $this->container->set('logger.channel.helfi_hakuvahti', $logger->reveal());
 
     $tests = [
-      ['GET', 'Confirm saved search'],
+      ['GET', 'Confirm search alert'],
       ['POST', 'Search alert subscription successful'],
       ['POST', 'already confirmed this search alert'],
       ['POST', 'Search alert confirmation failed'],
@@ -161,7 +161,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.confirm', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
     $content = $response->getContent() ?? '';
-    $this->assertStringContainsString('Confirm saved search', $content);
+    $this->assertStringContainsString('Confirm search alert', $content);
     $this->assertStringContainsString('Confirmation code', $content);
     $this->assertStringContainsString('name="id"', $content);
     $this->assertStringContainsString('name="code"', $content);
@@ -249,13 +249,13 @@ class HakuvahtiControllerTest extends KernelTestBase {
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
     $content = $response->getContent() ?? '';
-    $this->assertStringContainsString('Renew saved search', $content);
+    $this->assertStringContainsString('Extend your search alert subscription', $content);
     $this->assertStringNotContainsString('name="code"', $content);
 
     // POST success.
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('renewed', $response->getContent() ?? '');
+    $this->assertStringContainsString('extended', $response->getContent() ?? '');
   }
 
   /**
@@ -272,7 +272,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Renewal failed', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert subscription could not be extended', $response->getContent() ?? '');
   }
 
   /**
@@ -288,7 +288,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.unsubscribe', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
     $content = $response->getContent() ?? '';
-    $this->assertStringContainsString('Delete saved search', $content);
+    $this->assertStringContainsString('Remove search alert', $content);
     $this->assertStringNotContainsString('name="code"', $content);
 
     // POST success.
@@ -348,18 +348,18 @@ class HakuvahtiControllerTest extends KernelTestBase {
       [
         'helfi_hakuvahti.renew',
         [
-          ['GET', 'Renew saved search'],
-          ['POST', 'Search renewed successfully'],
-          ['POST', 'Renewal failed'],
-          ['POST', 'Renewal failed'],
+          ['GET', 'Extend your search alert subscription'],
+          ['POST', 'Search alert subscription has been extended'],
+          ['POST', 'Search alert subscription could not be extended'],
+          ['POST', 'Search alert subscription could not be extended'],
         ],
       ],
       [
         'helfi_hakuvahti.unsubscribe',
         [
-          ['GET', 'Delete saved search'],
+          ['GET', 'Remove search alert'],
           ['POST', 'search alert has been removed'],
-          ['POST', 'Saved search not found'],
+          ['POST', 'Unable to find search alert'],
           ['POST', 'Search alert removal failed'],
         ],
       ],

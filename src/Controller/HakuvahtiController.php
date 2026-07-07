@@ -37,7 +37,7 @@ final class HakuvahtiController extends ControllerBase {
   }
 
   /**
-   * Handles the confirmation of a saved search.
+   * Handles the confirmation of a search alert.
    *
    * @return array<string, mixed>
    *   Render array.
@@ -52,7 +52,7 @@ final class HakuvahtiController extends ControllerBase {
         'helfi_hakuvahti.confirm',
         $this->hakuvahti->confirmSms(...),
         $this->resolveTitle($config, 'confirm_sms_title',
-          $this->t('Confirm saved search', options: ['context' => 'Hakuvahti confirm']),
+          $this->t('Confirm search alert', options: ['context' => 'Hakuvahti confirm']),
         ),
         $this->resolveBody($config, 'confirm_sms_message',
           $this->t('Please enter the confirmation code that you received by SMS.', options: ['context' => 'Hakuvahti confirm']),
@@ -74,12 +74,12 @@ final class HakuvahtiController extends ControllerBase {
     return [
       '#theme' => 'hakuvahti_form',
       '#title' => $this->resolveTitle($config, 'confirm_processing_title',
-        $this->t('Enabling saved search', options: ['context' => 'Hakuvahti confirm']),
+        $this->t('Activating search alert', options: ['context' => 'Hakuvahti confirm']),
       ),
       '#message' => $this->resolveBody($config, 'confirm_processing_message',
-        $this->t('Please wait while the saved search is being enabled.', options: ['context' => 'Hakuvahti confirm']),
+        $this->t('Activating search alert subscription…', options: ['context' => 'Hakuvahti confirm']),
       ),
-      '#button_text' => $this->t('Confirm saved search', options: ['context' => 'Hakuvahti confirm']),
+      '#button_text' => $this->t('Confirm search alert', options: ['context' => 'Hakuvahti confirm']),
       '#autosubmit' => TRUE,
       '#action_url' => Url::fromRoute('helfi_hakuvahti.confirm', [], [
         'query' => array_filter([
@@ -124,7 +124,7 @@ final class HakuvahtiController extends ControllerBase {
   }
 
   /**
-   * Handles the renewal of a saved search.
+   * Handles the renewal of a search alert.
    *
    * @return array<string, mixed>
    *   Render array.
@@ -147,12 +147,12 @@ final class HakuvahtiController extends ControllerBase {
     return [
       '#theme' => 'hakuvahti_form',
       '#title' => $this->resolveTitle($config, 'renew_processing_title',
-        $this->t('Renewing saved search', options: ['context' => 'Hakuvahti renew']),
+        $this->t('Extending your search alert subscription', options: ['context' => 'Hakuvahti renew']),
       ),
       '#message' => $this->resolveBody($config, 'renew_processing_message',
-        $this->t('Please wait while the saved search is being renewed.', options: ['context' => 'Hakuvahti renew']),
+        $this->t('Search alert subscription is being processed…', options: ['context' => 'Hakuvahti renew']),
       ),
-      '#button_text' => $this->t('Renew saved search', options: ['context' => 'Hakuvahti renew']),
+      '#button_text' => $this->t('Extend your search alert subscription', options: ['context' => 'Hakuvahti renew']),
       '#autosubmit' => TRUE,
       '#action_url' => $id
         ? Url::fromRoute('helfi_hakuvahti.renew', [], [
@@ -187,10 +187,10 @@ final class HakuvahtiController extends ControllerBase {
       return [
         '#theme' => 'hakuvahti_confirmation',
         '#title' => $this->resolveTitle($config, 'renew_success_title',
-          $this->t('Search renewed successfully', options: ['context' => 'Hakuvahti renew success']),
+          $this->t('Search alert subscription has been extended', options: ['context' => 'Hakuvahti renew success']),
         ),
         '#message' => $this->resolveBody($config, 'renew_success_body',
-          $this->t('Your saved search has been renewed.', options: ['context' => 'Hakuvahti renew success']),
+          $this->t('Your search alert subscription has been successfully extended.', options: ['context' => 'Hakuvahti renew success']),
         ),
       ];
     }
@@ -205,16 +205,16 @@ final class HakuvahtiController extends ControllerBase {
     return [
       '#theme' => 'hakuvahti_confirmation',
       '#title' => $this->resolveTitle($config, 'renew_failure_title',
-        $this->t('Renewal failed', options: ['context' => 'Hakuvahti renew failure']),
+        $this->t('Search alert subscription could not be extended', options: ['context' => 'Hakuvahti renew failure']),
       ),
       '#message' => $this->resolveBody($config, 'renew_failure_body',
-        $this->t('Renewing saved search failed. Please try again.', options: ['context' => 'Hakuvahti renew failure']),
+        $this->t('Search alert subscription could not be extended. It may have expired.', options: ['context' => 'Hakuvahti renew failure']),
       ),
     ];
   }
 
   /**
-   * Handles the unsubscription from a saved search.
+   * Handles the unsubscription from a search alert.
    *
    * @return array<string, mixed>
    *   Render array.
@@ -243,12 +243,12 @@ final class HakuvahtiController extends ControllerBase {
     return [
       '#theme' => 'hakuvahti_form',
       '#title' => $this->resolveTitle($config, 'unsubscribe_processing_title',
-        $this->t('Deleting saved search', options: ['context' => 'Hakuvahti unsubscribe']),
+        $this->t('Removing search alert', options: ['context' => 'Hakuvahti unsubscribe']),
       ),
       '#message' => $this->resolveBody($config, 'unsubscribe_processing_message',
-        $this->t('Please wait while the saved search is being deleted. If you have other searches saved on the City website, this link will not delete them.', options: ['context' => 'Hakuvahti unsubscribe']),
+        $this->t('Removing search alert subscription…', options: ['context' => 'Hakuvahti unsubscribe']),
       ),
-      '#button_text' => $this->t('Delete saved search', options: ['context' => 'Hakuvahti unsubscribe']),
+      '#button_text' => $this->t('Remove search alert', options: ['context' => 'Hakuvahti unsubscribe']),
       '#autosubmit' => TRUE,
       '#action_url' => $id
         ? Url::fromRoute('helfi_hakuvahti.unsubscribe', [], [
@@ -296,10 +296,10 @@ final class HakuvahtiController extends ControllerBase {
         return [
           '#theme' => 'hakuvahti_confirmation',
           '#title' => $this->resolveTitle($config, 'unsubscribe_not_found_title',
-            $this->t('Saved search not found', options: ['context' => 'Hakuvahti unsubscribe not found']),
+            $this->t('Unable to find search alert', options: ['context' => 'Hakuvahti unsubscribe not found']),
           ),
           '#message' => $this->resolveBody($config, 'unsubscribe_not_found_body',
-            $this->t('Saved search was not found. It might be already removed.', options: ['context' => 'Hakuvahti unsubscribe not found']),
+            $this->t('Search alert is either no longer valid or it has been removed.', options: ['context' => 'Hakuvahti unsubscribe not found']),
           ),
         ];
       }
@@ -351,7 +351,7 @@ final class HakuvahtiController extends ControllerBase {
     ]);
 
     $buttonText = $this->resolveTitle($config, 'confirm_sms_button',
-      $this->t('Confirm saved search', options: ['context' => 'Hakuvahti confirm']),
+      $this->t('Confirm search alert', options: ['context' => 'Hakuvahti confirm']),
     );
 
     if ($request->isMethod('POST')) {
@@ -535,7 +535,7 @@ final class HakuvahtiController extends ControllerBase {
       '#message' => $this->resolveBody($config, 'already_confirmed_body', [
         $this->t('You have already confirmed this search alert.', options: ['context' => 'Hakuvahti already confirmed']),
         $this->t('You will receive email alerts about new search results up to once a day.', options: ['context' => 'Hakuvahti already confirmed']),
-        $this->t('Each email contains an unsubscribe link that you can use to unsubscribe from saved search alerts. You can save a new search at any time.', options: ['context' => 'Hakuvahti already confirmed']),
+        $this->t('Each email contains an unsubscribe link that you can use to unsubscribe from search alerts. You can subscribe to new search alert at any time.', options: ['context' => 'Hakuvahti already confirmed']),
       ]),
     ];
   }
@@ -547,7 +547,7 @@ final class HakuvahtiController extends ControllerBase {
     return $this->resolveTitle(
       $this->loadConfigBySiteId($request->query->get('site_id')),
       'confirm_page_title',
-      $this->t('Saved search confirmation'),
+      $this->t('Confirm search alert'),
     );
   }
 
@@ -558,7 +558,7 @@ final class HakuvahtiController extends ControllerBase {
     return $this->resolveTitle(
       $this->loadConfigBySiteId($request->query->get('site_id')),
       'renew_page_title',
-      $this->t('Renew saved search'),
+      $this->t('Extend search alert'),
     );
   }
 
@@ -569,7 +569,7 @@ final class HakuvahtiController extends ControllerBase {
     return $this->resolveTitle(
       $this->loadConfigBySiteId($request->query->get('site_id')),
       'unsubscribe_page_title',
-      $this->t('Saved search deletion'),
+      $this->t('Remove search alert'),
     );
   }
 
