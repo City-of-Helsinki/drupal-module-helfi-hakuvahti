@@ -39,16 +39,16 @@ msgid "Search alert subscription successful"
 msgstr "Beställningen av sökvakten lyckades"
 
 msgctxt "Hakuvahti confirm success"
-msgid "You will be notified of new search matches no more than once a day."
+msgid "You will receive an email with new search matches no more than once a day."
 msgstr "Du får information om nya träffar till din e-post högst en gång per dag."
 
 msgctxt "Hakuvahti confirm success"
-msgid "You can cancel your subscription using the link sent with each notification."
+msgid "You can cancel your subscription using the link you will receive with each notification."
 msgstr "Varje meddelande innehåller en annulleringslänk via vilken du kan sluta beställningen av denna sökvakt."
 
 msgctxt "Hakuvahti confirm success"
-msgid "You can subscribe to new search alerts at any time. The alerts are valid for six months."
-msgstr "Du kan när som helst beställa nya sökvakter. Sökvakterna gäller i sex månader."
+msgid "The search alert subscription is valid for six months."
+msgstr "Sökvakterna gäller i sex månader."
 
 # Hakuvahti confirm failure context
 
