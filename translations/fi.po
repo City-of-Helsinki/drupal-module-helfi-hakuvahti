@@ -42,16 +42,16 @@ msgid "Search alert subscription successful"
 msgstr "Hakuvahdin tilaus onnistui"
 
 msgctxt "Hakuvahti confirm success"
-msgid "You will be notified of new search matches no more than once a day."
+msgid "You will receive an email with new search matches no more than once a day."
 msgstr "Saat tiedon uusista osumista korkeintaan kerran päivässä."
 
 msgctxt "Hakuvahti confirm success"
-msgid "You can cancel your subscription using the link sent with each notification."
+msgid "You can cancel your subscription using the link you will receive with each notification."
 msgstr "Voit perua tilauksen linkillä, jonka saat jokaisen ilmoituksen mukana."
 
 msgctxt "Hakuvahti confirm success"
-msgid "You can subscribe to new search alerts at any time. The alerts are valid for six months."
-msgstr "Voit koska tahansa tilata uusia hakuvahteja. Hakuvahti on voimassa kuusi kuukautta."
+msgid "The search alert subscription is valid for six months."
+msgstr "Hakuvahti on voimassa kuusi kuukautta."
 
 # Hakuvahti confirm failure context
 

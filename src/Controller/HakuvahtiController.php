@@ -495,11 +495,11 @@ final class HakuvahtiController extends ControllerBase {
         $this->t('Search alert subscription successful', options: ['context' => 'Hakuvahti confirm success']),
       ),
       '#message' => $this->resolveBody($config, 'confirm_success_body', [
-        $this->t('You will be notified of new search matches no more than once a day.', options: ['context' => 'Hakuvahti confirm success']),
-        $this->t('You can cancel your subscription using the link sent with each notification.', options: ['context' => 'Hakuvahti confirm success']),
+        $this->t('You will receive an email with new search matches no more than once a day.', options: ['context' => 'Hakuvahti confirm success']),
+        $this->t('You can cancel your subscription using the link you will receive with each notification.', options: ['context' => 'Hakuvahti confirm success']),
         // @todo the backend should return how long the search alert is valid.
         // We have no idea here and it is controlled by the config file.
-        $this->t('You can subscribe to new search alerts at any time. The alerts are valid for six months.', options: ['context' => 'Hakuvahti confirm success']),
+        $this->t('The search alert subscription is valid for six months.', options: ['context' => 'Hakuvahti confirm success']),
       ]),
     ];
   }
