@@ -58,14 +58,13 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
 
     $id = $this->sut()->broadcast(new BroadcastRequest([
       'siteId' => 'etusivu',
-      'totpCode' => '123456',
       'messages' => [
         'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
         'sv' => ['subject' => 'SV subject', 'body' => 'SV body', 'sms' => 'SV sms'],
         'en' => ['subject' => 'EN subject', 'body' => 'EN body', 'sms' => 'EN sms'],
       ],
       'subscriptionIds' => ['0123456789abcdef01234567'],
-    ]));
+    ]), 'access-token');
 
     $this->assertSame('0123456789abcdef01234567', $id);
     $this->assertCount(1, $history);
@@ -74,9 +73,9 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     $this->assertSame('POST', $request->getMethod());
     $this->assertSame('https://example.com/broadcast', (string) $request->getUri());
     $this->assertSame('api-key 123', $request->getHeaderLine('Authorization'));
+    $this->assertSame('access-token', $request->getHeaderLine('X-Access-Token'));
     $this->assertSame([
       'site_id' => 'etusivu',
-      'totp_code' => '123456',
       'messages' => [
         'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
         'sv' => ['subject' => 'SV subject', 'body' => 'SV body', 'sms' => 'SV sms'],
@@ -100,7 +99,7 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     ]));
 
     $this->expectException(HakuvahtiException::class);
-    $this->sut()->broadcast($this->request());
+    $this->sut()->broadcast($this->request(), 'access-token');
   }
 
   /**
@@ -120,7 +119,7 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     ]));
 
     try {
-      $this->sut()->broadcast($this->request());
+      $this->sut()->broadcast($this->request(), 'access-token');
       $this->fail('Expected HakuvahtiException.');
     }
     catch (HakuvahtiException $exception) {
@@ -142,9 +141,8 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
         '{"error":"SMS text must be provided for either all languages or none.","field":"sms"}',
       ],
       'rejected payload without a JSON body' => [400, 'not json'],
-      'invalid verification code' => [403, '{"error":"Invalid verification code.","field":"totp_code"}'],
+      'invalid access token' => [403, '{"error":"Invalid or expired access token.","field":"access_token"}'],
       'broadcast already in progress' => [409, '{"error":"A broadcast for this site is already being processed."}'],
-      'broadcast api is locked' => [423, '{"error":"Broadcast API is locked. Try again later."}'],
       'server error' => [500, '{"error":"fail"}'],
     ];
   }
@@ -159,7 +157,7 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
 
     $this->expectException(HakuvahtiException::class);
     $this->expectExceptionMessage('Hakuvahti POST /broadcast request failed: womp womp');
-    $this->sut()->broadcast($this->request());
+    $this->sut()->broadcast($this->request(), 'access-token');
   }
 
   /**
@@ -200,7 +198,6 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
   private function request(): BroadcastRequest {
     return new BroadcastRequest([
       'siteId' => 'etusivu',
-      'totpCode' => '123456',
       'messages' => [
         'fi' => ['subject' => 'FI subject', 'body' => 'FI body'],
         'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],

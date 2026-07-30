@@ -109,9 +109,12 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   /**
    * {@inheritdoc}
    */
-  public function broadcast(BroadcastRequest $request): string {
+  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): string {
     $response = $this->makeRequest('POST', '/broadcast', [
       RequestOptions::JSON => $request->getServiceRequestData(),
+      // The api key says the request comes from this site, the access token
+      // says which user is behind it.
+      RequestOptions::HEADERS => ['X-Access-Token' => $accessToken],
       // Broadcasts get a longer timeout than the other requests.
       RequestOptions::TIMEOUT => 10,
     ]);

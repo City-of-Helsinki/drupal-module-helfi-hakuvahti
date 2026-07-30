@@ -13,6 +13,7 @@ use Drupal\helfi_hakuvahti\BroadcastRequest;
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\HakuvahtiException;
 use Drupal\helfi_hakuvahti\HakuvahtiInterface;
+use Drupal\helfi_tunnistamo\TokenManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -28,6 +29,7 @@ final class BroadcastForm extends FormBase {
     private readonly HakuvahtiInterface $hakuvahti,
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly LanguageManagerInterface $languageManager,
+    private readonly TokenManagerInterface $tokenManager,
     #[Autowire(service: 'logger.channel.helfi_hakuvahti')]
     private readonly LoggerInterface $logger,
   ) {
@@ -66,7 +68,17 @@ final class BroadcastForm extends FormBase {
 
     $cache = new CacheableMetadata();
     $cache->addCacheTags($this->entityTypeManager->getDefinition('hakuvahti_config')->getListCacheTags());
+    // Whether the form can be used at all depends on how the user logged in.
+    $cache->addCacheContexts(['user']);
     $cache->applyTo($form);
+
+    if (!$this->tokenManager->hasSession()) {
+      $form['no_session'] = [
+        '#type' => 'item',
+        '#markup' => $this->t('Broadcast messages are sent on behalf of the user sending them, which requires a Helsinki AD login. Log out and log back in using the Helsinki AD button to send a broadcast.', options: ['context' => 'Hakuvahti broadcast']),
+      ];
+      return $form;
+    }
 
     if (!$siteIds) {
       $form['no_sites'] = [
@@ -174,22 +186,6 @@ final class BroadcastForm extends FormBase {
       ], options: ['context' => 'Hakuvahti broadcast']),
     ];
 
-    $form['totp_code'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Verification code', options: ['context' => 'Hakuvahti broadcast']),
-      '#required' => TRUE,
-      '#size' => BroadcastRequest::TOTP_CODE_LENGTH,
-      '#maxlength' => BroadcastRequest::TOTP_CODE_LENGTH,
-      '#pattern' => '[0-9]{' . BroadcastRequest::TOTP_CODE_LENGTH . '}',
-      '#attributes' => [
-        'autocomplete' => 'off',
-        'inputmode' => 'numeric',
-      ],
-      '#description' => $this->t('Authentication code for sending broadcast messages', [
-        '@length' => BroadcastRequest::TOTP_CODE_LENGTH,
-      ], options: ['context' => 'Hakuvahti broadcast']),
-    ];
-
     $form['actions'] = [
       '#type' => 'actions',
     ];
@@ -243,10 +239,20 @@ final class BroadcastForm extends FormBase {
       }
     }
 
+    // Resolve the token before anything is logged as attempted: without one
+    // there is nothing to send.
+    if (!$accessToken = $this->tokenManager->getAccessToken()) {
+      $this->logger->warning(sprintf(
+        'Hakuvahti broadcast by uid %s was not attempted because the session has no valid access token.',
+        $this->currentUser()->id(),
+      ));
+      $this->messenger()->addError($this->t('Your login session has expired. Nothing was sent. Log out and log back in using the Helsinki AD button, then try again.', options: ['context' => 'Hakuvahti broadcast']));
+      return;
+    }
+
     try {
       $request = new BroadcastRequest([
         'siteId' => $siteId,
-        'totpCode' => $form_state->getValue('totp_code'),
         'messages' => $messages,
         'subscriptionIds' => $isTest ? $this->parseSubscriptionIds((string) $form_state->getValue('subscription_ids')) : [],
       ]);
@@ -276,15 +282,14 @@ final class BroadcastForm extends FormBase {
     ));
 
     try {
-      $broadcastId = $this->hakuvahti->broadcast($request);
+      $broadcastId = $this->hakuvahti->broadcast($request, $accessToken);
     }
     catch (HakuvahtiException $exception) {
       // Hakuvahti reports the reason as the HTTP status code.
       $error = match ($exception->getCode()) {
         400 => $this->t('Hakuvahti rejected the message. Nothing was sent. Check the message and try again.', options: ['context' => 'Hakuvahti broadcast']),
-        403 => $this->t('The verification code was not accepted. Nothing was sent. Enter the code and try again.', options: ['context' => 'Hakuvahti broadcast']),
+        403 => $this->t('Hakuvahti did not accept your login session. Nothing was sent. Log out and log back in using the Helsinki AD button, then try again.', options: ['context' => 'Hakuvahti broadcast']),
         409 => $this->t('A broadcast for this site is already being processed. Wait until it has finished before sending another one.', options: ['context' => 'Hakuvahti broadcast']),
-        423 => $this->t('Hakuvahti has locked broadcasting because of repeated invalid verification codes. Nothing was sent.', options: ['context' => 'Hakuvahti broadcast']),
         default => $this->t('Sending the broadcast message failed. The message may still have been sent, check Hakuvahti before trying again.', options: ['context' => 'Hakuvahti broadcast']),
       };
 

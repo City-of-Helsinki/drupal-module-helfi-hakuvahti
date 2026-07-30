@@ -10,6 +10,7 @@ use Drupal\Core\Url;
 use Drupal\helfi_hakuvahti\BroadcastRequest;
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\Form\BroadcastForm;
+use Drupal\helfi_tunnistamo\TokenManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
@@ -75,6 +76,23 @@ class BroadcastFormTest extends KernelTestBase {
 
     $logger = $this->prophesize(LoggerInterface::class);
     $this->container->set('logger.channel.helfi_hakuvahti', $logger->reveal());
+
+    $this->setUpTokenManager('access-token');
+  }
+
+  /**
+   * Fakes the openid connect session the broadcast is authorized with.
+   *
+   * @param string|null $accessToken
+   *   The access token the session holds, or NULL for a session that was not
+   *   authenticated with Tunnistamo.
+   */
+  private function setUpTokenManager(?string $accessToken): void {
+    $tokenManager = $this->prophesize(TokenManagerInterface::class);
+    $tokenManager->hasSession()->willReturn($accessToken !== NULL);
+    $tokenManager->getAccessToken()->willReturn($accessToken);
+
+    $this->container->set(TokenManagerInterface::class, $tokenManager->reveal());
   }
 
   /**
@@ -127,6 +145,22 @@ class BroadcastFormTest extends KernelTestBase {
   }
 
   /**
+   * Tests that the form is unusable without a Tunnistamo session.
+   */
+  public function testFormIsBlockedWithoutSession(): void {
+    $this->setUpTokenManager(NULL);
+
+    $form = $this->container->get(FormBuilderInterface::class)->getForm(BroadcastForm::class);
+
+    // Nothing can be sent, so the form is only an explanation.
+    $this->assertArrayHasKey('no_session', $form);
+    $this->assertArrayNotHasKey('actions', $form);
+    $this->assertArrayNotHasKey('messages', $form);
+    $this->assertArrayNotHasKey('site_id', $form);
+    $this->assertContains('user', $form['#cache']['contexts']);
+  }
+
+  /**
    * Submits the form.
    *
    * @param array<string, mixed> $values
@@ -166,7 +200,6 @@ class BroadcastFormTest extends KernelTestBase {
 
     return [
       'site_id' => 'etusivu',
-      'totp_code' => '123456',
       'messages' => $messages,
       'subscription_ids' => '',
     ];

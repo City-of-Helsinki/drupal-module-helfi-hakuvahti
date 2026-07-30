@@ -7,6 +7,7 @@ namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 use Drupal\Core\Url;
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\BroadcastRequest;
+use Drupal\helfi_tunnistamo\TokenManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
@@ -61,6 +62,13 @@ class BroadcastAccessTest extends KernelTestBase {
 
     $logger = $this->prophesize(LoggerInterface::class);
     $this->container->set('logger.channel.helfi_hakuvahti', $logger->reveal());
+
+    // This test is about permissions, so the broadcast form gets a session that
+    // is allowed to send.
+    $tokenManager = $this->prophesize(TokenManagerInterface::class);
+    $tokenManager->hasSession()->willReturn(TRUE);
+    $tokenManager->getAccessToken()->willReturn('access-token');
+    $this->container->set(TokenManagerInterface::class, $tokenManager->reveal());
 
     $client = $this->setupMockHttpClient([
       new Response(200, body: (string) json_encode([

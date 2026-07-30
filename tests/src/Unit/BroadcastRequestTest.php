@@ -47,12 +47,10 @@ class BroadcastRequestTest extends UnitTestCase {
       'email only' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages(),
         ],
         'expected' => [
           'site_id' => 'etusivu',
-          'totp_code' => '123456',
           'messages' => [
             'fi' => ['subject' => 'FI subject', 'body' => 'FI body'],
             'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],
@@ -63,7 +61,6 @@ class BroadcastRequestTest extends UnitTestCase {
       'with sms in every language' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['sms' => 'FI sms'],
             'sv' => ['sms' => 'SV sms'],
@@ -72,7 +69,6 @@ class BroadcastRequestTest extends UnitTestCase {
         ],
         'expected' => [
           'site_id' => 'etusivu',
-          'totp_code' => '123456',
           'messages' => [
             'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
             'sv' => ['subject' => 'SV subject', 'body' => 'SV body', 'sms' => 'SV sms'],
@@ -83,7 +79,6 @@ class BroadcastRequestTest extends UnitTestCase {
       'empty sms texts are omitted' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['sms' => ''],
             'sv' => ['sms' => '   '],
@@ -92,7 +87,6 @@ class BroadcastRequestTest extends UnitTestCase {
         ],
         'expected' => [
           'site_id' => 'etusivu',
-          'totp_code' => '123456',
           'messages' => [
             'fi' => ['subject' => 'FI subject', 'body' => 'FI body'],
             'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],
@@ -103,7 +97,6 @@ class BroadcastRequestTest extends UnitTestCase {
       'test send' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages(),
           'subscriptionIds' => [
             ' 0123456789abcdef01234567 ',
@@ -113,7 +106,6 @@ class BroadcastRequestTest extends UnitTestCase {
         ],
         'expected' => [
           'site_id' => 'etusivu',
-          'totp_code' => '123456',
           'messages' => [
             'fi' => ['subject' => 'FI subject', 'body' => 'FI body'],
             'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],
@@ -129,14 +121,12 @@ class BroadcastRequestTest extends UnitTestCase {
       'line endings are normalized' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['body' => "first\r\nsecond\r\n"],
           ]),
         ],
         'expected' => [
           'site_id' => 'etusivu',
-          'totp_code' => '123456',
           'messages' => [
             'fi' => ['subject' => 'FI subject', 'body' => "first\nsecond"],
             'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],
@@ -146,48 +136,41 @@ class BroadcastRequestTest extends UnitTestCase {
       ],
       'missing site id' => [
         'request' => [
-          'totpCode' => '123456',
           'messages' => self::messages(),
         ],
       ],
       'empty site id' => [
         'request' => [
           'siteId' => '  ',
-          'totpCode' => '123456',
           'messages' => self::messages(),
         ],
       ],
       'missing messages' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
         ],
       ],
       'missing language' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => array_diff_key(self::messages(), ['sv' => NULL]),
         ],
       ],
       'empty subject' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages(['sv' => ['subject' => '']]),
         ],
       ],
       'whitespace only body' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages(['en' => ['body' => " \n "]]),
         ],
       ],
       'subject too long' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['subject' => str_repeat('ä', BroadcastRequest::MAX_SUBJECT_LENGTH + 1)],
           ]),
@@ -196,7 +179,6 @@ class BroadcastRequestTest extends UnitTestCase {
       'body too long' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['body' => str_repeat('ä', BroadcastRequest::MAX_BODY_LENGTH + 1)],
           ]),
@@ -205,7 +187,6 @@ class BroadcastRequestTest extends UnitTestCase {
       'sms too long' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['sms' => str_repeat('ä', BroadcastRequest::MAX_SMS_LENGTH + 1)],
             'sv' => ['sms' => 'SV sms'],
@@ -216,17 +197,10 @@ class BroadcastRequestTest extends UnitTestCase {
       'sms in two languages only' => [
         'request' => [
           'siteId' => 'etusivu',
-          'totpCode' => '123456',
           'messages' => self::messages([
             'fi' => ['sms' => 'FI sms'],
             'sv' => ['sms' => 'SV sms'],
           ]),
-        ],
-      ],
-      'missing verification code' => [
-        'request' => [
-          'siteId' => 'etusivu',
-          'messages' => self::messages(),
         ],
       ],
     ];

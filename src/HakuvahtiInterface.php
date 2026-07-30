@@ -61,9 +61,16 @@ interface HakuvahtiInterface {
   /**
    * Send a broadcast message.
    *
+   * @param \Drupal\helfi_hakuvahti\BroadcastRequest $request
+   *   The message to broadcast.
+   * @param string $accessToken
+   *   The OpenID Connect access token of the user sending the broadcast.
+   *   Hakuvahti verifies it to know who is behind the request, so it has to
+   *   belong to the user and cannot have expired.
+   *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  public function broadcast(BroadcastRequest $request): string;
+  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): string;
 
   /**
    * Get the status of a broadcast.

@@ -20,29 +20,14 @@ final readonly class BroadcastRequest {
   public const int MAX_SUBSCRIPTION_IDS = 10;
 
   /**
-   * Length of the verification code.
-   */
-  public const int TOTP_CODE_LENGTH = 6;
-
-  /**
    * Subscription ids are MongoDB object ids.
    */
   private const string SUBSCRIPTION_ID_PATTERN = '/^[0-9a-f]{24}$/i';
 
   /**
-   * The verification code is a six digit TOTP code.
-   */
-  private const string TOTP_CODE_PATTERN = '/^[0-9]{6}$/';
-
-  /**
    * The site id.
    */
   public string $siteId;
-
-  /**
-   * Current code from the broadcast authenticator.
-   */
-  public string $totpCode;
 
   /**
    * The messages, keyed by langcode.
@@ -74,15 +59,6 @@ final readonly class BroadcastRequest {
     $this->siteId = trim((string) $requestData['siteId']);
     if ($this->siteId === '') {
       throw new \InvalidArgumentException("Required field value is empty: siteId");
-    }
-
-    if (!isset($requestData['totpCode'])) {
-      throw new \InvalidArgumentException("Request is missing field: totpCode");
-    }
-
-    $this->totpCode = trim((string) $requestData['totpCode']);
-    if (!preg_match(self::TOTP_CODE_PATTERN, $this->totpCode)) {
-      throw new \InvalidArgumentException('The verification code must be ' . self::TOTP_CODE_LENGTH . ' digits.');
     }
 
     if (!isset($requestData['messages']) || !is_array($requestData['messages'])) {
@@ -133,7 +109,6 @@ final readonly class BroadcastRequest {
 
     $data = [
       'site_id' => $this->siteId,
-      'totp_code' => $this->totpCode,
       'messages' => $messages,
     ];
 
