@@ -17,6 +17,9 @@ class HakuvahtiRequestClassTest extends UnitTestCase {
 
   /**
    * Test the request class.
+   *
+   * @phpstan-param array<string, mixed> $request
+   * @phpstan-param array<string, mixed>|null $expected
    */
   #[DataProvider('data')]
   public function testRequestClass(array $request, ?array $expected = NULL): void {
@@ -34,6 +37,8 @@ class HakuvahtiRequestClassTest extends UnitTestCase {
 
   /**
    * Get tests data.
+   *
+   * @phpstan-return array<int, array{request: array<string, mixed>, expected?: array<string, mixed>}>
    */
   public static function data(): array {
     return [

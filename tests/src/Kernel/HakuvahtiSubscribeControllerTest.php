@@ -151,6 +151,8 @@ class HakuvahtiSubscribeControllerTest extends KernelTestBase {
 
   /**
    * Process a request.
+   *
+   * @phpstan-param array<string, mixed> $body
    */
   private function makeRequest(array $body = []): SymfonyResponse {
     $url = Url::fromRoute('helfi_hakuvahti.subscribe');

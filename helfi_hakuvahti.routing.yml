@@ -8,6 +8,27 @@ helfi_hakuvahti.settings:
   options:
     _admin_route: TRUE
 
+helfi_hakuvahti.broadcast:
+  path: '/admin/tools/hakuvahti/broadcast'
+  defaults:
+    _form: '\Drupal\helfi_hakuvahti\Form\BroadcastForm'
+    _title: 'Send broadcast message'
+  requirements:
+    _permission: 'send hakuvahti broadcast'
+  options:
+    _admin_route: TRUE
+
+helfi_hakuvahti.broadcast_status:
+  path: '/admin/tools/hakuvahti/broadcast/{broadcast_id}'
+  defaults:
+    _controller: '\Drupal\helfi_hakuvahti\Controller\BroadcastStatusController::view'
+    _title: 'Broadcast status'
+  requirements:
+    _permission: 'send hakuvahti broadcast'
+    broadcast_id: '[0-9a-fA-F]{24}'
+  options:
+    _admin_route: TRUE
+
 helfi_hakuvahti.subscribe:
   path: '/hakuvahti/subscribe'
   defaults:

@@ -11,6 +11,9 @@ helfi_hakuvahti.config.*:
     site_id:
       type: string
       label: 'Site ID'
+    sms_enabled:
+      type: boolean
+      label: 'SMS sending is enabled for the site in Hakuvahti'
     confirm_success_title:
       type: text
       label: 'Confirm success title'

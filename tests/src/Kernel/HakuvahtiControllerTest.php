@@ -73,12 +73,14 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
       $response = $this->makeRequest($method, 'helfi_hakuvahti.confirm', ['hash' => 'a', 'subscription' => 'b']);
       $this->assertEquals(200, $response->getStatusCode());
-      $this->assertStringContainsString($message, $response->getContent() ?? '');
+      $this->assertStringContainsString($message, $response->getContent() ?: '');
     }
   }
 
   /**
    * Tests renew and unsubscribe routes.
+   *
+   * @phpstan-param array<int, array<int, string>> $tests
    */
   #[DataProvider('dataProvider')]
   public function testRenewAndUnsubscribeRoutes(string $route, array $tests): void {
@@ -99,7 +101,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
       $response = $this->makeRequest($method, $route, ['hash' => 'a', 'subscription' => 'b']);
       $this->assertEquals(200, $response->getStatusCode());
-      $this->assertStringContainsString($message, $response->getContent() ?? '');
+      $this->assertStringContainsString($message, $response->getContent() ?: '');
     }
   }
 
@@ -115,6 +117,8 @@ class HakuvahtiControllerTest extends KernelTestBase {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   Controller response.
+   *
+   * @phpstan-param array<string, string> $query
    */
   private function makeRequest(string $method, string $route, array $query = []): SymfonyResponse {
     $url = Url::fromRoute($route, options: [
@@ -147,7 +151,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
     foreach ($cases as $query) {
       $response = $this->makeRequest('GET', 'helfi_hakuvahti.confirm', $query);
       $this->assertEquals(200, $response->getStatusCode());
-      $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?? '');
+      $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?: '');
     }
   }
 
@@ -160,7 +164,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.confirm', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $content = $response->getContent() ?? '';
+    $content = $response->getContent() ?: '';
     $this->assertStringContainsString('Confirm search alert', $content);
     $this->assertStringContainsString('Confirmation code', $content);
     $this->assertStringContainsString('name="id"', $content);
@@ -176,7 +180,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.confirm', ['id' => '']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?: '');
   }
 
   /**
@@ -194,7 +198,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Search alert subscription successful', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert subscription successful', $response->getContent() ?: '');
   }
 
   /**
@@ -212,7 +216,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('already confirmed this search alert', $response->getContent() ?? '');
+    $this->assertStringContainsString('already confirmed this search alert', $response->getContent() ?: '');
   }
 
   /**
@@ -233,7 +237,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert confirmation failed', $response->getContent() ?: '');
   }
 
   /**
@@ -248,14 +252,14 @@ class HakuvahtiControllerTest extends KernelTestBase {
     // GET renders autosubmit form (no code field).
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $content = $response->getContent() ?? '';
+    $content = $response->getContent() ?: '';
     $this->assertStringContainsString('Extend your search alert subscription', $content);
     $this->assertStringNotContainsString('name="code"', $content);
 
     // POST success.
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('extended', $response->getContent() ?? '');
+    $this->assertStringContainsString('extended', $response->getContent() ?: '');
   }
 
   /**
@@ -272,7 +276,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.renew', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Search alert subscription could not be extended', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert subscription could not be extended', $response->getContent() ?: '');
   }
 
   /**
@@ -287,14 +291,14 @@ class HakuvahtiControllerTest extends KernelTestBase {
     // GET renders autosubmit form (no code field).
     $response = $this->makeRequest('GET', 'helfi_hakuvahti.unsubscribe', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $content = $response->getContent() ?? '';
+    $content = $response->getContent() ?: '';
     $this->assertStringContainsString('Remove search alert', $content);
     $this->assertStringNotContainsString('name="code"', $content);
 
     // POST success.
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.unsubscribe', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('removed', $response->getContent() ?? '');
+    $this->assertStringContainsString('removed', $response->getContent() ?: '');
   }
 
   /**
@@ -311,7 +315,7 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
     $response = $this->makeRequest('POST', 'helfi_hakuvahti.unsubscribe', ['id' => 'sub-123']);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Search alert removal failed', $response->getContent() ?? '');
+    $this->assertStringContainsString('Search alert removal failed', $response->getContent() ?: '');
   }
 
   /**
@@ -337,11 +341,13 @@ class HakuvahtiControllerTest extends KernelTestBase {
       ['id' => 'sub-123', 'code' => '1234']
     );
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertStringContainsString('Too many requests', $response->getContent() ?? '');
+    $this->assertStringContainsString('Too many requests', $response->getContent() ?: '');
   }
 
   /**
    * Data provider for testRenewAndUnsubscribeRoutes.
+   *
+   * @phpstan-return array<int, array{string, array<int, array<int, string>>}>
    */
   public static function dataProvider(): array {
     return [
@@ -368,6 +374,8 @@ class HakuvahtiControllerTest extends KernelTestBase {
 
   /**
    * Sets up hakuvahti configuration and mock HTTP client.
+   *
+   * @phpstan-param \Psr\Http\Message\ResponseInterface[]|\GuzzleHttp\Exception\GuzzleException[] $responses
    */
   private function setupHakuvahtiConfig(array $responses = []): void {
     if ($responses) {
@@ -392,6 +400,9 @@ class HakuvahtiControllerTest extends KernelTestBase {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   Controller response.
+   *
+   * @phpstan-param array<string, string> $query
+   * @phpstan-param array<string, string> $postData
    */
   private function makeSmsPostRequest(string $route, array $query, array $postData): SymfonyResponse {
     $url = Url::fromRoute($route, options: [

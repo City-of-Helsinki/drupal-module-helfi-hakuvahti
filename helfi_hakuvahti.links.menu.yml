@@ -3,3 +3,9 @@ helfi_hakuvahti.settings:
   route_name: helfi_hakuvahti.settings
   parent: hdbt_admin_tools.site_information
   weight: 90
+
+helfi_hakuvahti.broadcast:
+  title: 'Send Hakuvahti broadcast'
+  route_name: helfi_hakuvahti.broadcast
+  parent: hdbt_admin_tools.site_information
+  weight: 91

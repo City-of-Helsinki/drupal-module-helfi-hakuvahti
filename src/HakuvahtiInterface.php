@@ -58,4 +58,18 @@ interface HakuvahtiInterface {
    */
   public function deleteSms(string $subscriptionId): void;
 
+  /**
+   * Send a broadcast message.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function broadcast(BroadcastRequest $request): string;
+
+  /**
+   * Get the status of a broadcast.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function getBroadcastStatus(string $id): BroadcastStatus;
+
 }

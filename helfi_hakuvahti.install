@@ -9,6 +9,10 @@
 
 declare(strict_types=1);
 
+use Drupal\helfi_api_base\Environment\EnvironmentResolverInterface;
+use Drupal\helfi_api_base\Environment\Project;
+use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
+
 /**
  * UHF-12723: Move configuration from rekry to hakuvahti module.
  */
@@ -18,4 +22,31 @@ function helfi_hakuvahti_update_11001(): void {
     ->set('hakuvahti_instructions_link_url', '')
     ->set('langcode', 'en')
     ->save();
+}
+
+/**
+ * UHF-13151: Enable SMS broadcasts on the kymp instance.
+ */
+function helfi_hakuvahti_update_11002(): void {
+  try {
+    $project = \Drupal::service(EnvironmentResolverInterface::class)
+      ->getActiveProject()
+      ->getName();
+  }
+  catch (\Exception) {
+    return;
+  }
+
+  if ($project !== Project::LIIKENNE) {
+    return;
+  }
+
+  $configs = \Drupal::entityTypeManager()
+    ->getStorage('hakuvahti_config')
+    ->loadMultiple();
+
+  foreach ($configs as $config) {
+    assert($config instanceof HakuvahtiConfig);
+    $config->set('sms_enabled', TRUE)->save();
+  }
 }
