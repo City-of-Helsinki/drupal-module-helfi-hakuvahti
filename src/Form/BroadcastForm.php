@@ -90,7 +90,10 @@ final class BroadcastForm extends FormBase {
 
     $form['description'] = [
       '#type' => 'item',
-      '#markup' => $this->t('The message is sent to every subscriber of the selected site. Sending cannot be undone.', options: ['context' => 'Hakuvahti broadcast']),
+      '#markup' => $this->t(
+        '<p>The message is sent to every subscriber of the selected site. Sending cannot be undone.</p><p>Sending uses your Helsinki AD login, which expires sooner than your Drupal session. If sending fails, log out and log back in using the Helsinki AD button to get a new login, then try again. Sending also requires that your Helsinki AD account belongs to a group that is allowed to broadcast for the selected site.</p>',
+        options: ['context' => 'Hakuvahti broadcast']
+      ),
     ];
 
     if (count($siteIds) === 1) {
