@@ -8,7 +8,6 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\helfi_hakuvahti\BroadcastRequest;
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\HakuvahtiException;
@@ -28,7 +27,6 @@ final class BroadcastForm extends FormBase {
   public function __construct(
     private readonly HakuvahtiInterface $hakuvahti,
     private readonly EntityTypeManagerInterface $entityTypeManager,
-    private readonly LanguageManagerInterface $languageManager,
     private readonly TokenManagerInterface $tokenManager,
     #[Autowire(service: 'logger.channel.helfi_hakuvahti')]
     private readonly LoggerInterface $logger,
@@ -64,7 +62,7 @@ final class BroadcastForm extends FormBase {
     );
     ksort($siteIds);
 
-    $smsSiteIds = array_filter($siteIds, static fn (HakuvahtiConfig $config) => $config->isSmsEnabled());
+    $hasSmsSites = array_any($siteIds, static fn (HakuvahtiConfig $config) => $config->isSmsEnabled());
 
     $cache = new CacheableMetadata();
     $cache->addCacheTags($this->entityTypeManager->getDefinition('hakuvahti_config')->getListCacheTags());
@@ -118,18 +116,22 @@ final class BroadcastForm extends FormBase {
       ];
     }
 
-    $smsStates = $smsSiteIds && count($smsSiteIds) !== count($siteIds)
-      ? $this->siteIdStates($smsSiteIds)
-      : NULL;
+    // Hakuvahti composes the sms of a site that sends them from the same
+    // subject and body as the email. It has no endpoint for asking which
+    // sites those are, so the notice is based on Drupal side configuration.
+    if ($hasSmsSites) {
+      $form['sms_notice'] = [
+        '#type' => 'item',
+        '#markup' => $this->t('On a site that sends text messages, subscribers who have confirmed a phone number also receive the message as a text message, composed of the same subject and message. A long message is delivered as several text messages.', options: ['context' => 'Hakuvahti broadcast']),
+      ];
+    }
 
     $form['messages'] = [
       '#tree' => TRUE,
     ];
 
     foreach (BroadcastRequest::LANGUAGES as $langcode) {
-      if (!($language = $this->languageManager->getLanguage($langcode)?->getName())) {
-        throw new \LogicException('Language "' . $langcode . '" not installed');
-      }
+      $language = strtoupper($langcode);
 
       $form['messages'][$langcode] = [
         '#type' => 'details',
@@ -157,36 +159,13 @@ final class BroadcastForm extends FormBase {
         '#rows' => 12,
         '#maxlength' => BroadcastRequest::MAX_BODY_LENGTH,
       ];
-
-      // Hakuvahti discards SMS texts for a site that does not have SMS sending
-      // enabled, and it has no endpoint for asking which sites those are.
-      // We display this field based on Drupal side configuration.
-      if ($smsSiteIds) {
-        $form['messages'][$langcode]['sms'] = [
-          '#type' => 'textarea',
-          '#title' => $this->t('SMS text (@language)', [
-            '@language' => $language,
-          ], options: ['context' => 'Hakuvahti broadcast']),
-          '#rows' => 3,
-          '#maxlength' => BroadcastRequest::MAX_SMS_LENGTH,
-        ];
-
-        if ($smsStates) {
-          $form['messages'][$langcode]['sms']['#states'] = $smsStates;
-        }
-        else {
-          $form['messages'][$langcode]['sms']['#required'] = TRUE;
-        }
-      }
     }
 
     $form['subscription_ids'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Test recipients: subscription IDs', options: ['context' => 'Hakuvahti broadcast']),
       '#rows' => 3,
-      '#description' => $this->t('One subscription ID per line. Only used by the "Send test message" button, and must be empty when sending to all subscribers. Get this value from your subscription\'s unsubscribe link.', [
-        '@max' => BroadcastRequest::MAX_SUBSCRIPTION_IDS,
-      ], options: ['context' => 'Hakuvahti broadcast']),
+      '#description' => $this->t('One subscription ID per line. Only used by the "Send test message" button, and must be empty when sending to all subscribers. Get this value from your subscription\'s unsubscribe link.', options: ['context' => 'Hakuvahti broadcast']),
     ];
 
     $form['actions'] = [
@@ -230,17 +209,6 @@ final class BroadcastForm extends FormBase {
 
     $siteId = (string) $form_state->getValue('site_id');
     $messages = (array) $form_state->getValue('messages');
-
-    if (!$this->isSmsEnabled($siteId)) {
-      // The field is hidden for a site without SMS sending, but a value can
-      // still arrive from a submission that had another site selected.
-      foreach ($messages as $langcode => $message) {
-        if (is_array($message)) {
-          unset($message['sms']);
-          $messages[$langcode] = $message;
-        }
-      }
-    }
 
     // Resolve the token before anything is logged as attempted: without one
     // there is nothing to send.
@@ -333,59 +301,6 @@ final class BroadcastForm extends FormBase {
    */
   private function parseSubscriptionIds(string $value): array {
     return preg_split('/[\s,]+/', $value, flags: PREG_SPLIT_NO_EMPTY) ?: [];
-  }
-
-  /**
-   * Whether SMS sending is enabled for the given site in hakuvahti.
-   *
-   * @param string $siteId
-   *   The site id.
-   *
-   * @return bool
-   *   TRUE if configuration of the site has SMS sending enabled.
-   */
-  private function isSmsEnabled(string $siteId): bool {
-    if ($siteId === '') {
-      return FALSE;
-    }
-
-    foreach ($this->entityTypeManager->getStorage('hakuvahti_config')->loadByProperties(['site_id' => $siteId]) as $entity) {
-      assert($entity instanceof HakuvahtiConfig);
-
-      if ($entity->isSmsEnabled()) {
-        return TRUE;
-      }
-    }
-
-    return FALSE;
-  }
-
-  /**
-   * Builds a #states array that applies to the given sites only.
-   *
-   * @param array<string, HakuvahtiConfig> $siteIds
-   *   The site ids the element applies to.
-   *
-   * @phpstan-return array<string, mixed>
-   *   The states array.
-   */
-  private function siteIdStates(array $siteIds): array {
-    $conditions = [];
-    foreach ($siteIds as $siteId) {
-      if ($conditions) {
-        $conditions[] = 'or';
-      }
-      $conditions[] = ['value' => $siteId->getSiteId()];
-    }
-
-    $condition = [
-      ':input[name="site_id"]' => count($conditions) === 1 ? reset($conditions) : $conditions,
-    ];
-
-    return [
-      'visible' => $condition,
-      'required' => $condition,
-    ];
   }
 
 }

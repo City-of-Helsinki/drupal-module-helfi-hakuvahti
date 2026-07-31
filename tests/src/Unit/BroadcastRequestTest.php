@@ -58,31 +58,13 @@ class BroadcastRequestTest extends UnitTestCase {
           ],
         ],
       ],
-      'with sms in every language' => [
+      'unknown message keys are dropped' => [
         'request' => [
           'siteId' => 'etusivu',
           'messages' => self::messages([
             'fi' => ['sms' => 'FI sms'],
             'sv' => ['sms' => 'SV sms'],
             'en' => ['sms' => 'EN sms'],
-          ]),
-        ],
-        'expected' => [
-          'site_id' => 'etusivu',
-          'messages' => [
-            'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
-            'sv' => ['subject' => 'SV subject', 'body' => 'SV body', 'sms' => 'SV sms'],
-            'en' => ['subject' => 'EN subject', 'body' => 'EN body', 'sms' => 'EN sms'],
-          ],
-        ],
-      ],
-      'empty sms texts are omitted' => [
-        'request' => [
-          'siteId' => 'etusivu',
-          'messages' => self::messages([
-            'fi' => ['sms' => ''],
-            'sv' => ['sms' => '   '],
-            'en' => ['sms' => "\r\n"],
           ]),
         ],
         'expected' => [
@@ -181,25 +163,6 @@ class BroadcastRequestTest extends UnitTestCase {
           'siteId' => 'etusivu',
           'messages' => self::messages([
             'fi' => ['body' => str_repeat('ä', BroadcastRequest::MAX_BODY_LENGTH + 1)],
-          ]),
-        ],
-      ],
-      'sms too long' => [
-        'request' => [
-          'siteId' => 'etusivu',
-          'messages' => self::messages([
-            'fi' => ['sms' => str_repeat('ä', BroadcastRequest::MAX_SMS_LENGTH + 1)],
-            'sv' => ['sms' => 'SV sms'],
-            'en' => ['sms' => 'EN sms'],
-          ]),
-        ],
-      ],
-      'sms in two languages only' => [
-        'request' => [
-          'siteId' => 'etusivu',
-          'messages' => self::messages([
-            'fi' => ['sms' => 'FI sms'],
-            'sv' => ['sms' => 'SV sms'],
           ]),
         ],
       ],

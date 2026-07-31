@@ -12,7 +12,6 @@ use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\Form\BroadcastForm;
 use Drupal\helfi_tunnistamo\TokenManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use GuzzleHttp\Psr7\Response;
@@ -43,7 +42,6 @@ class BroadcastFormTest extends KernelTestBase {
   protected static $modules = [
     'user',
     'system',
-    'language',
     'helfi_hakuvahti',
   ];
 
@@ -53,12 +51,6 @@ class BroadcastFormTest extends KernelTestBase {
   protected function setUp(): void {
     parent::setUp();
     $this->installConfig(['helfi_hakuvahti']);
-
-    // The form labels the message fields with the language names, so every
-    // broadcast language has to be installed.
-    foreach (BroadcastRequest::LANGUAGES as $langcode) {
-      ConfigurableLanguage::createFromLangcode($langcode)->save();
-    }
 
     $this->config('helfi_hakuvahti.settings')
       ->set('base_url', 'https://example.com')
@@ -140,6 +132,26 @@ class BroadcastFormTest extends KernelTestBase {
   }
 
   /**
+   * Tests that a site sending text messages only adds a notice to the form.
+   */
+  public function testSmsSiteOnlyGetsNotice(): void {
+    $formBuilder = $this->container->get(FormBuilderInterface::class);
+
+    $form = $formBuilder->getForm(BroadcastForm::class);
+    $this->assertArrayNotHasKey('sms_notice', $form);
+
+    HakuvahtiConfig::load('news')->set('sms_enabled', TRUE)->save();
+
+    $form = $formBuilder->getForm(BroadcastForm::class);
+    $this->assertArrayHasKey('sms_notice', $form);
+    // Hakuvahti composes the text message from the subject and the body, so
+    // there is no separate field for it either way.
+    foreach (BroadcastRequest::LANGUAGES as $langcode) {
+      $this->assertArrayNotHasKey('sms', $form['messages'][$langcode]);
+    }
+  }
+
+  /**
    * Tests that the form is unusable without a Tunnistamo session.
    */
   public function testFormIsBlockedWithoutSession(): void {
@@ -189,7 +201,6 @@ class BroadcastFormTest extends KernelTestBase {
       $messages[$langcode] = [
         'subject' => "$prefix subject",
         'body' => "$prefix body",
-        'sms' => '',
       ];
     }
 

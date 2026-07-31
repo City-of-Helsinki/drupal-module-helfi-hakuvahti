@@ -16,7 +16,6 @@ final readonly class BroadcastRequest {
 
   public const int MAX_SUBJECT_LENGTH = 255;
   public const int MAX_BODY_LENGTH = 10000;
-  public const int MAX_SMS_LENGTH = 500;
   public const int MAX_SUBSCRIPTION_IDS = 10;
 
   /**
@@ -31,8 +30,6 @@ final readonly class BroadcastRequest {
 
   /**
    * The messages, keyed by langcode.
-   *
-   * Each message has a subject and a body, and optionally an sms text.
    *
    * @phpstan-var array<string, array<string, string>>
    */
@@ -77,18 +74,6 @@ final readonly class BroadcastRequest {
   }
 
   /**
-   * Whether the broadcast contains sms texts.
-   */
-  public function hasSms(): bool {
-    foreach (self::LANGUAGES as $langcode) {
-      if (!isset($this->messages[$langcode]['sms'])) {
-        return FALSE;
-      }
-    }
-    return TRUE;
-  }
-
-  /**
    * Return the data to be sent to hakuvahti's broadcast endpoint.
    *
    * @return array<string, mixed>
@@ -101,10 +86,6 @@ final readonly class BroadcastRequest {
         'subject' => $this->messages[$langcode]['subject'],
         'body' => $this->messages[$langcode]['body'],
       ];
-
-      if (isset($this->messages[$langcode]['sms'])) {
-        $messages[$langcode]['sms'] = $this->messages[$langcode]['sms'];
-      }
     }
 
     $data = [
@@ -137,7 +118,6 @@ final readonly class BroadcastRequest {
 
       $subject = $this->normalize($messages[$langcode]['subject'] ?? '');
       $body = $this->normalize($messages[$langcode]['body'] ?? '');
-      $sms = $this->normalize($messages[$langcode]['sms'] ?? '');
 
       if ($subject === '') {
         throw new \InvalidArgumentException("Required field value is empty: messages.$langcode.subject");
@@ -157,21 +137,6 @@ final readonly class BroadcastRequest {
         'subject' => $subject,
         'body' => $body,
       ];
-
-      // An empty sms text means the language has no sms message at all.
-      if ($sms !== '') {
-        if (\mb_strlen($sms) > self::MAX_SMS_LENGTH) {
-          throw new \InvalidArgumentException("Sms text is too long for language: $langcode");
-        }
-        $normalized[$langcode]['sms'] = $sms;
-      }
-    }
-
-    // Subscribers must not be excluded from an sms broadcast based on their
-    // language, so sms texts are all-or-none.
-    $smsCount = count(array_filter($normalized, static fn (array $message): bool => isset($message['sms'])));
-    if ($smsCount !== 0 && $smsCount !== count(self::LANGUAGES)) {
-      throw new \InvalidArgumentException('SMS text must be provided for either all languages or none.');
     }
 
     return $normalized;

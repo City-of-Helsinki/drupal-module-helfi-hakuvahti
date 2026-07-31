@@ -59,9 +59,9 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     $this->sut()->broadcast(new BroadcastRequest([
       'siteId' => 'etusivu',
       'messages' => [
-        'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
-        'sv' => ['subject' => 'SV subject', 'body' => 'SV body', 'sms' => 'SV sms'],
-        'en' => ['subject' => 'EN subject', 'body' => 'EN body', 'sms' => 'EN sms'],
+        'fi' => ['subject' => 'FI subject', 'body' => 'FI body'],
+        'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],
+        'en' => ['subject' => 'EN subject', 'body' => 'EN body'],
       ],
       'subscriptionIds' => ['0123456789abcdef01234567'],
     ]), 'access-token');
@@ -76,9 +76,9 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     $this->assertSame([
       'site_id' => 'etusivu',
       'messages' => [
-        'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
-        'sv' => ['subject' => 'SV subject', 'body' => 'SV body', 'sms' => 'SV sms'],
-        'en' => ['subject' => 'EN subject', 'body' => 'EN body', 'sms' => 'EN sms'],
+        'fi' => ['subject' => 'FI subject', 'body' => 'FI body'],
+        'sv' => ['subject' => 'SV subject', 'body' => 'SV body'],
+        'en' => ['subject' => 'EN subject', 'body' => 'EN body'],
       ],
       'subscription_ids' => ['0123456789abcdef01234567'],
     ], json_decode((string) $request->getBody(), TRUE, flags: JSON_THROW_ON_ERROR));
@@ -120,7 +120,7 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     return [
       'rejected payload' => [
         400,
-        '{"error":"SMS text must be provided for either all languages or none.","field":"sms"}',
+        '{"error":"Invalid subscription id provided.","field":"subscription_ids"}',
       ],
       'rejected payload without a JSON body' => [400, 'not json'],
       'invalid access token' => [403, '{"error":"Invalid or expired access token.","field":"access_token"}'],
