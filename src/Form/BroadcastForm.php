@@ -8,6 +8,7 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\helfi_hakuvahti\BroadcastRequest;
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\HakuvahtiException;
@@ -217,7 +218,11 @@ final class BroadcastForm extends FormBase {
         'Hakuvahti broadcast by uid %s was not attempted because the session has no valid access token.',
         $this->currentUser()->id(),
       ));
-      $this->messenger()->addError($this->t('Your login session has expired. Nothing was sent. Log out and log back in using the Helsinki AD button, then try again.', options: ['context' => 'Hakuvahti broadcast']));
+      $this->messenger()->addError($this->t('Your login session has expired. Nothing was sent. <a href=":url">Log out</a> and log back in using the Helsinki AD button, then try again.', [
+        // The message is only shown on an uncached form submission response,
+        // so the csrf token can be resolved right away.
+        ':url' => Url::fromRoute('user.logout')->toString(),
+      ], options: ['context' => 'Hakuvahti broadcast']));
       return;
     }
 
