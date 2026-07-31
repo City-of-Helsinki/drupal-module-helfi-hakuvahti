@@ -61,6 +61,9 @@ interface HakuvahtiInterface {
   /**
    * Send a broadcast message.
    *
+   * Hakuvahti only acknowledges that it accepted the message and sends it in
+   * the background. It reports nothing back about the delivery.
+   *
    * @param \Drupal\helfi_hakuvahti\BroadcastRequest $request
    *   The message to broadcast.
    * @param string $accessToken
@@ -70,13 +73,6 @@ interface HakuvahtiInterface {
    *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): string;
-
-  /**
-   * Get the status of a broadcast.
-   *
-   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
-   */
-  public function getBroadcastStatus(string $id): BroadcastStatus;
+  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): void;
 
 }

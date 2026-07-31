@@ -10,7 +10,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Hakuvahti API client.
@@ -109,8 +108,8 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   /**
    * {@inheritdoc}
    */
-  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): string {
-    $response = $this->makeRequest('POST', '/broadcast', [
+  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): void {
+    $this->makeRequest('POST', '/broadcast', [
       RequestOptions::JSON => $request->getServiceRequestData(),
       // The api key says the request comes from this site, the access token
       // says which user is behind it.
@@ -118,56 +117,6 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
       // Broadcasts get a longer timeout than the other requests.
       RequestOptions::TIMEOUT => 10,
     ]);
-
-    $data = $this->decodeJson($response);
-
-    if (empty($data->id) || !is_string($data->id)) {
-      throw new HakuvahtiException('Hakuvahti broadcast response did not contain an id.', $response->getStatusCode());
-    }
-
-    return $data->id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getBroadcastStatus(string $id): BroadcastStatus {
-    $response = $this->makeRequest('GET', "/broadcast/$id");
-
-    try {
-      return BroadcastStatus::fromObject($this->decodeJson($response));
-    }
-    catch (\InvalidArgumentException $exception) {
-      throw new HakuvahtiException(
-        'Hakuvahti returned an unexpected broadcast status: ' . $exception->getMessage(),
-        $response->getStatusCode(),
-        previous: $exception,
-      );
-    }
-  }
-
-  /**
-   * Decodes a JSON response.
-   *
-   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
-   */
-  private function decodeJson(ResponseInterface $response): \stdClass {
-    try {
-      $data = json_decode((string) $response->getBody(), flags: JSON_THROW_ON_ERROR);
-    }
-    catch (\JsonException $exception) {
-      throw new HakuvahtiException(
-        'Hakuvahti returned an invalid JSON response: ' . $exception->getMessage(),
-        $response->getStatusCode(),
-        previous: $exception,
-      );
-    }
-
-    if (!$data instanceof \stdClass) {
-      throw new HakuvahtiException('Hakuvahti returned an unexpected JSON response.', $response->getStatusCode());
-    }
-
-    return $data;
   }
 
   /**
@@ -180,11 +129,9 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
    * @param array<string, mixed> $options
    *   Guzzle options.
    *
-   * @phpstan-return \Psr\Http\Message\ResponseInterface
-   *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  private function makeRequest(string $method, string $url, array $options = []): ResponseInterface {
+  private function makeRequest(string $method, string $url, array $options = []): void {
     $settings = $this->configFactory->get('helfi_hakuvahti.settings');
     if (!$baseUrl = $settings->get('base_url')) {
       throw new HakuvahtiException('Hakuvahti base url is not configured.');
@@ -193,7 +140,7 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
     $apiKey = $settings->get('api_key');
 
     try {
-      return $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
+      $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
         RequestOptions::HEADERS => [
           'Authorization' => "api-key $apiKey",
         ],

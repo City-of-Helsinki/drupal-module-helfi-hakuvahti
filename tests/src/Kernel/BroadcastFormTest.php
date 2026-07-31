@@ -6,7 +6,7 @@ namespace Drupal\Tests\helfi_hakuvahti\Kernel;
 
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
-use Drupal\Core\Url;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\helfi_hakuvahti\BroadcastRequest;
 use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\Form\BroadcastForm;
@@ -96,25 +96,20 @@ class BroadcastFormTest extends KernelTestBase {
   }
 
   /**
-   * Tests that a broadcast redirects to the status page.
+   * Tests sending a broadcast to every subscriber.
    */
   public function testSendToAllSubscribers(): void {
     $this->container->set('http_client', $this->createMockHistoryMiddlewareHttpClient($this->history, [
-      new Response(202, body: '{"id":"0123456789abcdef01234567"}'),
+      new Response(202),
     ]));
 
     $formState = $this->submit($this->values(), 'send_all');
 
     $this->assertEmpty($formState->getErrors());
 
-    // FormState::getRedirect() returns FALSE for programmed submissions, so
-    // the flag has to be reset before the redirect can be inspected.
-    $formState->setProgrammed(FALSE);
-    $redirect = $formState->getRedirect();
-
-    $this->assertInstanceOf(Url::class, $redirect);
-    $this->assertSame('helfi_hakuvahti.broadcast_status', $redirect->getRouteName());
-    $this->assertSame(['broadcast_id' => '0123456789abcdef01234567'], $redirect->getRouteParameters());
+    $messenger = $this->container->get('messenger');
+    $this->assertCount(1, $messenger->messagesByType(MessengerInterface::TYPE_STATUS));
+    $this->assertEmpty($messenger->messagesByType(MessengerInterface::TYPE_ERROR));
 
     $payload = json_decode((string) $this->history[0]['request']->getBody(), TRUE);
     $this->assertSame('etusivu', $payload['site_id']);
@@ -128,7 +123,7 @@ class BroadcastFormTest extends KernelTestBase {
    */
   public function testSendTestMessage(): void {
     $this->container->set('http_client', $this->createMockHistoryMiddlewareHttpClient($this->history, [
-      new Response(202, body: '{"id":"0123456789abcdef01234567"}'),
+      new Response(202),
     ]));
 
     $formState = $this->submit([

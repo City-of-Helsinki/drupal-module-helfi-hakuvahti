@@ -15,7 +15,6 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\Attributes\TestWith;
 
 /**
  * Tests the broadcast requests of the hakuvahti client.
@@ -52,11 +51,12 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
    */
   public function testBroadcastRequest(): void {
     $history = [];
+    // Hakuvahti acknowledges the broadcast with an empty response.
     $this->container->set('http_client', $this->createMockHistoryMiddlewareHttpClient($history, [
-      new Response(202, body: '{"id":"0123456789abcdef01234567"}'),
+      new Response(202),
     ]));
 
-    $id = $this->sut()->broadcast(new BroadcastRequest([
+    $this->sut()->broadcast(new BroadcastRequest([
       'siteId' => 'etusivu',
       'messages' => [
         'fi' => ['subject' => 'FI subject', 'body' => 'FI body', 'sms' => 'FI sms'],
@@ -66,7 +66,6 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
       'subscriptionIds' => ['0123456789abcdef01234567'],
     ]), 'access-token');
 
-    $this->assertSame('0123456789abcdef01234567', $id);
     $this->assertCount(1, $history);
 
     $request = $history[0]['request'];
@@ -83,23 +82,6 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
       ],
       'subscription_ids' => ['0123456789abcdef01234567'],
     ], json_decode((string) $request->getBody(), TRUE, flags: JSON_THROW_ON_ERROR));
-  }
-
-  /**
-   * Tests that an unusable response body is treated as a failure.
-   *
-   * @param string $body
-   *   The response body.
-   */
-  #[TestWith(['{}'], 'response without an id')]
-  #[TestWith(['not json'], 'non-JSON response')]
-  public function testBroadcastUnusableResponse(string $body): void {
-    $this->container->set('http_client', $this->setupMockHttpClient([
-      new Response(202, body: $body),
-    ]));
-
-    $this->expectException(HakuvahtiException::class);
-    $this->sut()->broadcast($this->request(), 'access-token');
   }
 
   /**
@@ -142,7 +124,10 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
       ],
       'rejected payload without a JSON body' => [400, 'not json'],
       'invalid access token' => [403, '{"error":"Invalid or expired access token.","field":"access_token"}'],
-      'broadcast already in progress' => [409, '{"error":"A broadcast for this site is already being processed."}'],
+      'sender not in an allowed AD group' => [
+        403,
+        '{"error":"Not authorized to broadcast for this site.","field":"access_token"}',
+      ],
       'server error' => [500, '{"error":"fail"}'],
     ];
   }
@@ -158,28 +143,6 @@ class HakuvahtiBroadcastTest extends KernelTestBase {
     $this->expectException(HakuvahtiException::class);
     $this->expectExceptionMessage('Hakuvahti POST /broadcast request failed: womp womp');
     $this->sut()->broadcast($this->request(), 'access-token');
-  }
-
-  /**
-   * Tests reading the status of a broadcast.
-   */
-  public function testGetBroadcastStatus(): void {
-    $history = [];
-    $client = $this->createMockHistoryMiddlewareHttpClient($history, [
-      new Response(200, body: '{"id":"0123456789abcdef01234567","site_id":"etusivu","status":"completed","test":false,"created":"2026-07-30T12:00:00.000Z","stats":{"subscriptionsChecked":3,"emailsQueued":2,"smsQueued":0,"missingContacts":1}}'),
-    ]);
-    $this->container->set('http_client', $client);
-
-    $status = $this->sut()->getBroadcastStatus('0123456789abcdef01234567');
-
-    $this->assertSame('https://example.com/broadcast/0123456789abcdef01234567', (string) $history[0]['request']->getUri());
-    $this->assertSame('completed', $status->status);
-    $this->assertSame('etusivu', $status->siteId);
-    $this->assertFalse($status->test);
-    $this->assertNotNull($status->stats);
-    $this->assertSame(3, $status->stats->subscriptionsChecked);
-    $this->assertSame(2, $status->stats->emailsQueued);
-    $this->assertSame(1, $status->stats->missingContacts);
   }
 
   /**

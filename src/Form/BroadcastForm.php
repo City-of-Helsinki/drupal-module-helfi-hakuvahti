@@ -282,14 +282,16 @@ final class BroadcastForm extends FormBase {
     ));
 
     try {
-      $broadcastId = $this->hakuvahti->broadcast($request, $accessToken);
+      $this->hakuvahti->broadcast($request, $accessToken);
     }
     catch (HakuvahtiException $exception) {
       // Hakuvahti reports the reason as the HTTP status code.
       $error = match ($exception->getCode()) {
         400 => $this->t('Hakuvahti rejected the message. Nothing was sent. Check the message and try again.', options: ['context' => 'Hakuvahti broadcast']),
-        403 => $this->t('Hakuvahti did not accept your login session. Nothing was sent. Log out and log back in using the Helsinki AD button, then try again.', options: ['context' => 'Hakuvahti broadcast']),
-        409 => $this->t('A broadcast for this site is already being processed. Wait until it has finished before sending another one.', options: ['context' => 'Hakuvahti broadcast']),
+        // Hakuvahti answers 403 both when the access token is no longer valid
+        // and when the user is not in an AD group allowed to broadcast for the
+        // selected site.
+        403 => $this->t('Hakuvahti did not accept the request. Nothing was sent. Your login session may have expired, in which case logging out and back in using the Helsinki AD button helps. Otherwise your account does not have permission to broadcast for this site.', options: ['context' => 'Hakuvahti broadcast']),
         default => $this->t('Sending the broadcast message failed. The message may still have been sent, check Hakuvahti before trying again.', options: ['context' => 'Hakuvahti broadcast']),
       };
 
@@ -302,10 +304,8 @@ final class BroadcastForm extends FormBase {
       return;
     }
 
-    $this->logger->notice(sprintf('Hakuvahti accepted broadcast %s for site %s.', $broadcastId, $request->siteId));
+    $this->logger->notice(sprintf('Hakuvahti accepted a broadcast for site %s.', $request->siteId));
     $this->messenger()->addStatus($this->t('The message was accepted for sending. Delivery runs in the background and may take several minutes.', options: ['context' => 'Hakuvahti broadcast']));
-
-    $form_state->setRedirect('helfi_hakuvahti.broadcast_status', ['broadcast_id' => $broadcastId]);
   }
 
   /**
