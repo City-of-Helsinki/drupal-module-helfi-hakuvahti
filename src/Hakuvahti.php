@@ -106,6 +106,20 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): void {
+    $this->makeRequest('POST', '/broadcast', [
+      RequestOptions::JSON => $request->getServiceRequestData(),
+      // The api key says the request comes from this site, the access token
+      // says which user is behind it.
+      RequestOptions::HEADERS => ['X-Access-Token' => $accessToken],
+      // Broadcasts get a longer timeout than the other requests.
+      RequestOptions::TIMEOUT => 10,
+    ]);
+  }
+
+  /**
    * Make hakuvahti request.
    *
    * @param string $method
@@ -134,7 +148,11 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
       ], $options));
     }
     catch (GuzzleException $exception) {
-      throw new HakuvahtiException('Hakuvahti unsubscribe request failed: ' . $exception->getMessage(), $exception->getCode(), previous: $exception);
+      throw new HakuvahtiException(
+        sprintf('Hakuvahti %s %s request failed: %s', $method, $url, $exception->getMessage()),
+        $exception->getCode(),
+        previous: $exception,
+      );
     }
   }
 

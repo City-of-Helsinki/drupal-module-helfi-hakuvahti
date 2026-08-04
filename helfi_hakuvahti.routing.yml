@@ -8,6 +8,16 @@ helfi_hakuvahti.settings:
   options:
     _admin_route: TRUE
 
+helfi_hakuvahti.broadcast:
+  path: '/admin/tools/hakuvahti/broadcast'
+  defaults:
+    _form: '\Drupal\helfi_hakuvahti\Form\BroadcastForm'
+    _title: 'Send broadcast message'
+  requirements:
+    _permission: 'send hakuvahti broadcast'
+  options:
+    _admin_route: TRUE
+
 helfi_hakuvahti.subscribe:
   path: '/hakuvahti/subscribe'
   defaults:

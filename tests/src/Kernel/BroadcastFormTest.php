@@ -1,0 +1,214 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\Tests\helfi_hakuvahti\Kernel;
+
+use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Form\FormState;
+use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\helfi_hakuvahti\BroadcastRequest;
+use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
+use Drupal\helfi_hakuvahti\Form\BroadcastForm;
+use Drupal\helfi_tunnistamo\TokenManagerInterface;
+use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
+use Drupal\Tests\user\Traits\UserCreationTrait;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Psr\Log\LoggerInterface;
+
+/**
+ * Tests for the broadcast form.
+ */
+#[Group('helfi_hakuvahti')]
+#[RunTestsInSeparateProcesses]
+class BroadcastFormTest extends KernelTestBase {
+
+  use ApiTestTrait;
+  use UserCreationTrait;
+
+  /**
+   * Requests made through the mocked HTTP client.
+   *
+   * @var array<mixed>
+   */
+  private array $history = [];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'user',
+    'system',
+    'helfi_hakuvahti',
+  ];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+    $this->installConfig(['helfi_hakuvahti']);
+
+    $this->config('helfi_hakuvahti.settings')
+      ->set('base_url', 'https://example.com')
+      ->set('api_key', '123')
+      ->save();
+
+    // The shipped default configuration has no site id.
+    HakuvahtiConfig::create([
+      'id' => 'news',
+      'label' => 'News',
+      'site_id' => 'etusivu',
+    ])->save();
+
+    $this->setUpCurrentUser(permissions: ['send hakuvahti broadcast']);
+
+    $logger = $this->prophesize(LoggerInterface::class);
+    $this->container->set('logger.channel.helfi_hakuvahti', $logger->reveal());
+
+    $this->setUpTokenManager('access-token');
+  }
+
+  /**
+   * Fakes the openid connect session the broadcast is authorized with.
+   *
+   * @param string|null $accessToken
+   *   The access token the session holds, or NULL for a session that was not
+   *   authenticated with Tunnistamo.
+   */
+  private function setUpTokenManager(?string $accessToken): void {
+    $tokenManager = $this->prophesize(TokenManagerInterface::class);
+    $tokenManager->hasSession()->willReturn($accessToken !== NULL);
+    $tokenManager->getAccessToken()->willReturn($accessToken);
+
+    $this->container->set(TokenManagerInterface::class, $tokenManager->reveal());
+  }
+
+  /**
+   * Tests sending a broadcast to every subscriber.
+   */
+  public function testSendToAllSubscribers(): void {
+    $this->container->set('http_client', $this->createMockHistoryMiddlewareHttpClient($this->history, [
+      new Response(202),
+    ]));
+
+    $formState = $this->submit($this->values(), 'send_all');
+
+    $this->assertEmpty($formState->getErrors());
+
+    $messenger = $this->container->get('messenger');
+    $this->assertCount(1, $messenger->messagesByType(MessengerInterface::TYPE_STATUS));
+    $this->assertEmpty($messenger->messagesByType(MessengerInterface::TYPE_ERROR));
+
+    $payload = json_decode((string) $this->history[0]['request']->getBody(), TRUE);
+    $this->assertSame('etusivu', $payload['site_id']);
+    $this->assertSame('FI subject', $payload['messages']['fi']['subject']);
+    // Subscription ids are only sent for test broadcasts.
+    $this->assertArrayNotHasKey('subscription_ids', $payload);
+  }
+
+  /**
+   * Tests that a test broadcast targets the given subscriptions.
+   */
+  public function testSendTestMessage(): void {
+    $this->container->set('http_client', $this->createMockHistoryMiddlewareHttpClient($this->history, [
+      new Response(202),
+    ]));
+
+    $formState = $this->submit([
+      'subscription_ids' => "0123456789abcdef01234567\nfedcba9876543210fedcba98",
+    ] + $this->values(), 'send_test');
+
+    $this->assertEmpty($formState->getErrors());
+
+    $payload = json_decode((string) $this->history[0]['request']->getBody(), TRUE);
+    $this->assertSame([
+      '0123456789abcdef01234567',
+      'fedcba9876543210fedcba98',
+    ], $payload['subscription_ids']);
+  }
+
+  /**
+   * Tests that a site sending text messages only adds a notice to the form.
+   */
+  public function testSmsSiteOnlyGetsNotice(): void {
+    $formBuilder = $this->container->get(FormBuilderInterface::class);
+
+    $form = $formBuilder->getForm(BroadcastForm::class);
+    $this->assertArrayNotHasKey('sms_notice', $form);
+
+    HakuvahtiConfig::load('news')->set('sms_enabled', TRUE)->save();
+
+    $form = $formBuilder->getForm(BroadcastForm::class);
+    $this->assertArrayHasKey('sms_notice', $form);
+    // Hakuvahti composes the text message from the subject and the body, so
+    // there is no separate field for it either way.
+    foreach (BroadcastRequest::LANGUAGES as $langcode) {
+      $this->assertArrayNotHasKey('sms', $form['messages'][$langcode]);
+    }
+  }
+
+  /**
+   * Tests that the form is unusable without a Tunnistamo session.
+   */
+  public function testFormIsBlockedWithoutSession(): void {
+    $this->setUpTokenManager(NULL);
+
+    $form = $this->container->get(FormBuilderInterface::class)->getForm(BroadcastForm::class);
+
+    // Nothing can be sent, so the form is only an explanation.
+    $this->assertArrayHasKey('no_session', $form);
+    $this->assertArrayNotHasKey('actions', $form);
+    $this->assertArrayNotHasKey('messages', $form);
+    $this->assertArrayNotHasKey('site_id', $form);
+    $this->assertContains('user', $form['#cache']['contexts']);
+  }
+
+  /**
+   * Submits the form.
+   *
+   * @param array<string, mixed> $values
+   *   The values to submit.
+   * @param string $button
+   *   Name of the button that triggered the submission.
+   */
+  private function submit(array $values, string $button): FormState {
+    $formState = new FormState();
+    $formState->setValues($values);
+    $formState->setTriggeringElement([
+      '#name' => $button,
+      '#parents' => [],
+      '#array_parents' => [],
+    ]);
+
+    $this->container->get(FormBuilderInterface::class)->submitForm(BroadcastForm::class, $formState);
+
+    return $formState;
+  }
+
+  /**
+   * Gets a valid set of form values.
+   *
+   * @phpstan-return array<string, mixed>
+   */
+  private function values(): array {
+    $messages = [];
+    foreach (BroadcastRequest::LANGUAGES as $langcode) {
+      $prefix = strtoupper($langcode);
+      $messages[$langcode] = [
+        'subject' => "$prefix subject",
+        'body' => "$prefix body",
+      ];
+    }
+
+    return [
+      'site_id' => 'etusivu',
+      'messages' => $messages,
+      'subscription_ids' => '',
+    ];
+  }
+
+}

@@ -3,5 +3,8 @@ type: module
 description: 'Drupal-integration for hakuvahti.'
 package: HELfi
 core_version_requirement: ^10 || ^11
+dependencies:
+  # Broadcasting is authorized with the access token of the sending user.
+  - 'helfi_tunnistamo:helfi_tunnistamo'
 'interface translation project': helfi_hakuvahti
 'interface translation server pattern': modules/contrib/helfi_hakuvahti/translations/%language.po

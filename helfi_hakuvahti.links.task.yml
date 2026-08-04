@@ -2,3 +2,9 @@ helfi_hakuvahti.settings:
   route_name: helfi_hakuvahti.settings
   title: 'Hakuvahti settings'
   base_route: helfi_hakuvahti.settings
+
+helfi_hakuvahti.broadcast:
+  route_name: helfi_hakuvahti.broadcast
+  title: 'Broadcast message'
+  base_route: helfi_hakuvahti.settings
+  weight: 10

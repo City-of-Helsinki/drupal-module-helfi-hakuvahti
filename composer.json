@@ -5,7 +5,8 @@
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "require": {
-        "drupal/helfi_api_base": "*"
+        "drupal/helfi_api_base": "*",
+        "drupal/helfi_tunnistamo": ">=3.2.0"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",

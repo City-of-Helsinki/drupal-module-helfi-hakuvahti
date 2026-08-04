@@ -10,6 +10,12 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Defines the Hakuvahti configuration entity.
+ *
+ * @fixme I don't really see a good point in having separate
+ * config entity and helfi_hakuvahti.settings. This config entity
+ * just complicates other features of this module.
+ *
+ * @fixme Some sites have extra hakuvahti_config entities that are just empty.
  */
 #[ConfigEntityType(
   id: 'hakuvahti_config',
@@ -20,6 +26,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
     'id',
     'label',
     'site_id',
+    'sms_enabled',
     'confirm_success_title',
     'confirm_success_body',
     'confirm_failure_title',
@@ -54,6 +61,8 @@ class HakuvahtiConfig extends ConfigEntityBase {
 
   /**
    * The configuration ID.
+   *
+   * NOTE: ID is a Drupal identifier only and does not match site_id.
    */
   protected string $id;
 
@@ -66,6 +75,14 @@ class HakuvahtiConfig extends ConfigEntityBase {
    * The site ID sent to the backend server.
    */
   protected string $site_id = '';
+
+  /**
+   * Whether SMS sending is enabled for the site in hakuvahti.
+   *
+   * Hakuvahti has no endpoint for reading its own site configuration, so this
+   * mirrors the backend setting and has to be kept in sync by hand.
+   */
+  protected bool $sms_enabled = FALSE;
 
   /**
    * Confirm success title.
@@ -220,6 +237,13 @@ class HakuvahtiConfig extends ConfigEntityBase {
   public function setSiteId(string $site_id): static {
     $this->site_id = $site_id;
     return $this;
+  }
+
+  /**
+   * Whether SMS sending is enabled for the site.
+   */
+  public function isSmsEnabled(): bool {
+    return $this->sms_enabled;
   }
 
   /**

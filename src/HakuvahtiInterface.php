@@ -58,4 +58,21 @@ interface HakuvahtiInterface {
    */
   public function deleteSms(string $subscriptionId): void;
 
+  /**
+   * Send a broadcast message.
+   *
+   * Hakuvahti only acknowledges that it accepted the message and sends it in
+   * the background. It reports nothing back about the delivery.
+   *
+   * @param \Drupal\helfi_hakuvahti\BroadcastRequest $request
+   *   The message to broadcast.
+   * @param string $accessToken
+   *   The OpenID Connect access token of the user sending the broadcast.
+   *   Hakuvahti verifies it to know who is behind the request, so it has to
+   *   belong to the user and cannot have expired.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): void;
+
 }
