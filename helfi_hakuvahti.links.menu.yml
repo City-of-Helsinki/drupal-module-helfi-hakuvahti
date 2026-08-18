@@ -9,3 +9,9 @@ helfi_hakuvahti.broadcast:
   route_name: helfi_hakuvahti.broadcast
   parent: hdbt_admin_tools.site_information
   weight: 91
+
+helfi_hakuvahti.statistics:
+  title: 'Hakuvahti statistics'
+  route_name: helfi_hakuvahti.statistics
+  parent: hdbt_admin_tools.site_information
+  weight: 92

@@ -1,0 +1,8 @@
+/**
+ * @file
+ * Statistics page.
+ */
+
+.hakuvahti-stats {
+  margin-top: var(--spacing-l, 24px);
+}

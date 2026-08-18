@@ -18,6 +18,16 @@ helfi_hakuvahti.broadcast:
   options:
     _admin_route: TRUE
 
+helfi_hakuvahti.statistics:
+  path: '/admin/tools/hakuvahti/statistics'
+  defaults:
+    _form: '\Drupal\helfi_hakuvahti\Form\StatsForm'
+    _title: 'Hakuvahti statistics'
+  requirements:
+    _permission: 'view hakuvahti statistics'
+  options:
+    _admin_route: TRUE
+
 helfi_hakuvahti.subscribe:
   path: '/hakuvahti/subscribe'
   defaults:
