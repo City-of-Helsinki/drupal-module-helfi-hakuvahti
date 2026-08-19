@@ -121,7 +121,7 @@ final class StatsForm extends FormBase {
       '#date_timezone' => 'Europe/Helsinki',
       '#title' => $this->t('Start date', options: ['context' => 'Hakuvahti statistics']),
       '#default_value' => $from,
-      '#description' => $this->t('Leave both dates empty for the default range: 13 months, or 31 days.', options: ['context' => 'Hakuvahti statistics']),
+      '#description' => $this->t('Leave both dates empty for the default range: this month and the 12 before it, or the last 31 days.', options: ['context' => 'Hakuvahti statistics']),
     ];
 
     $form['to'] = [
@@ -347,11 +347,9 @@ final class StatsForm extends FormBase {
       ? $this->t('Showing @from to @to, one row per day.', $arguments, ['context' => 'Hakuvahti statistics'])
       : $this->t('Showing @from to @to, one row per month.', $arguments, ['context' => 'Hakuvahti statistics']);
 
-    $items[] = ($report['collecting_since'] ?? NULL)
-      ? $this->t('Collected since @date. Periods before that read as zero for want of data.', [
-        '@date' => $report['collecting_since'],
-      ], ['context' => 'Hakuvahti statistics'])
-      : $this->t('Nothing has been recorded for this site yet.', options: ['context' => 'Hakuvahti statistics']);
+    if (!($report['collecting_since'] ?? NULL)) {
+      $items[] = $this->t('Nothing has been recorded for this site yet.', options: ['context' => 'Hakuvahti statistics']);
+    }
 
     // "Active subscriptions" is counted when the request is made, so it only
     // matches the last measured "Active at end" just after a cron run.
