@@ -21,19 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class StatsForm extends FormBase {
 
-  private const string ROUTE = 'helfi_hakuvahti.statistics';
   private const string BUTTON_SHOW = 'show';
   private const string BUTTON_DOWNLOAD = 'download';
-
-  /**
-   * Semicolon, because finnish-locale Excel splits on it.
-   */
-  private const string CSV_DELIMITER = ';';
-
-  /**
-   * Used when the response holds no period to read the languages off.
-   */
-  private const array FALLBACK_LANGUAGES = ['fi', 'sv', 'en'];
 
   public function __construct(
     private readonly HakuvahtiInterface $hakuvahti,
@@ -216,7 +205,7 @@ final class StatsForm extends FormBase {
 
     if (($form_state->getTriggeringElement()['#name'] ?? NULL) !== self::BUTTON_DOWNLOAD) {
       // Rendering from the url keeps the page bookmarkable and refreshable.
-      $form_state->setRedirect(self::ROUTE, [], [
+      $form_state->setRedirect('helfi_hakuvahti.statistics', [], [
         'query' => array_filter([
           'site_id' => $siteId,
           'interval' => $interval,
@@ -446,7 +435,7 @@ final class StatsForm extends FormBase {
   private function languages(array $report): array {
     $languages = array_map(strval(...), array_keys($report['periods'][0]['confirmed_by_lang'] ?? []));
 
-    return $languages ?: self::FALLBACK_LANGUAGES;
+    return $languages ?: ['fi', 'sv', 'en'];
   }
 
   /**
@@ -541,7 +530,7 @@ final class StatsForm extends FormBase {
    *   The fields of one row.
    */
   private function csvRow($handle, array $fields): void {
-    fputcsv($handle, $fields, self::CSV_DELIMITER, escape: '', eol: "\r\n");
+    fputcsv($handle, $fields, ';', escape: '', eol: "\r\n");
   }
 
 }
