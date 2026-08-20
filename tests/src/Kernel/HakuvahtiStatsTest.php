@@ -108,7 +108,8 @@ class HakuvahtiStatsTest extends KernelTestBase {
   }
 
   /**
-   * Tests that a response which is not a json object fails as a hakuvahti error.
+   * Tests that a response which is not a json object fails as a hakuvahti
+   * error.
    */
   #[TestWith(['<html><body>504 Gateway Timeout</body></html>', 'unreadable'])]
   #[TestWith(['"nope"', 'unexpected'])]
