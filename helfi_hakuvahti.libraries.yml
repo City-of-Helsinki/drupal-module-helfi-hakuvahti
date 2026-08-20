@@ -4,9 +4,3 @@ form:
     assets/hakuvahti_form.js: {}
   dependencies:
     - core/drupal
-
-stats:
-  version: 1.0
-  css:
-    theme:
-      assets/hakuvahti_stats.css: {}

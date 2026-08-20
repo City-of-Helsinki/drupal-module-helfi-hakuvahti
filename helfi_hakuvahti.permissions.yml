@@ -3,8 +3,6 @@ send hakuvahti broadcast:
   description: 'Send a message to every Hakuvahti subscriber of a site. This cannot be undone.'
   restrict access: true
 
-# Deliberately not restricted: the figures are aggregate counts and hold no
-# personal data, so a site can grant these without granting broadcasting.
 view hakuvahti statistics:
   title: 'View Hakuvahti statistics'
   description: 'View subscription key figures and download them as CSV.'

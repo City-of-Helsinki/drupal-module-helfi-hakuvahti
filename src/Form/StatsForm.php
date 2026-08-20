@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\helfi_hakuvahti\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -26,7 +25,6 @@ final class StatsForm extends FormBase {
 
   public function __construct(
     private readonly HakuvahtiInterface $hakuvahti,
-    private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly DateFormatterInterface $dateFormatter,
     #[Autowire(service: 'logger.channel.helfi_hakuvahti')]
     private readonly LoggerInterface $logger,
@@ -59,7 +57,7 @@ final class StatsForm extends FormBase {
       return $form;
     }
 
-    $sites = $this->sites();
+    $sites = HakuvahtiConfig::loadBySiteId();
 
     if (!$sites) {
       $form['no_sites'] = [
@@ -120,7 +118,7 @@ final class StatsForm extends FormBase {
       '#type' => 'date',
       '#date_timezone' => 'Europe/Helsinki',
       '#title' => $this->t('Start date', options: ['context' => 'Hakuvahti statistics']),
-      '#default_value' => $from,
+      '#default_value' => $from?->format('Y-m-d'),
       '#description' => $this->t('Leave both dates empty for the default range: this month and the 12 before it, or the last 31 days.', options: ['context' => 'Hakuvahti statistics']),
     ];
 
@@ -128,7 +126,7 @@ final class StatsForm extends FormBase {
       '#type' => 'date',
       '#date_timezone' => 'Europe/Helsinki',
       '#title' => $this->t('End date', options: ['context' => 'Hakuvahti statistics']),
-      '#default_value' => $to,
+      '#default_value' => $to?->format('Y-m-d'),
     ];
 
     $form['actions'] = [
@@ -185,8 +183,7 @@ final class StatsForm extends FormBase {
     $from = $this->date($form_state->getValue('from'));
     $to = $this->date($form_state->getValue('to'));
 
-    // Both are plain YYYY-MM-DD, so they compare as strings. Checking here
-    // saves a request hakuvahti would only answer with a 400.
+    // Checked here so hakuvahti is not asked something it answers with a 400.
     if ($from && $to && $to < $from) {
       $form_state->setErrorByName('to', $this->t('End date cannot be before start date.', options: ['context' => 'Hakuvahti statistics']));
     }
@@ -209,8 +206,8 @@ final class StatsForm extends FormBase {
         'query' => array_filter([
           'site_id' => $siteId,
           'interval' => $interval,
-          'from' => $from,
-          'to' => $to,
+          'from' => $from?->format('Y-m-d'),
+          'to' => $to?->format('Y-m-d'),
         ]),
       ]);
       return;
@@ -242,7 +239,7 @@ final class StatsForm extends FormBase {
    * @return array<string, mixed>|null
    *   The report, or NULL if it could not be read.
    */
-  private function read(string $siteId, string $interval, ?string $from, ?string $to): ?array {
+  private function read(string $siteId, string $interval, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to): ?array {
     try {
       return $this->hakuvahti->stats($siteId, $interval, $from, $to);
     }
@@ -274,46 +271,18 @@ final class StatsForm extends FormBase {
   }
 
   /**
-   * Hakuvahti configurations that have a site id, keyed by it.
-   *
-   * @return array<string, \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig>
-   *   The configurations.
-   */
-  private function sites(): array {
-    /** @var \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig[] $configs */
-    $configs = $this->entityTypeManager->getStorage('hakuvahti_config')->loadMultiple();
-
-    $sites = array_reduce(
-      $configs,
-      static function (array $result, HakuvahtiConfig $config) {
-        // Some hakuvahti_config entities are just broken.
-        if ($config->getSiteId()) {
-          $result[$config->getSiteId()] = $config;
-        }
-        return $result;
-      },
-      []
-    );
-    ksort($sites);
-
-    return $sites;
-  }
-
-  /**
    * Accepts a date only if it is one the calendar has.
    *
-   * @return string|null
-   *   The date as YYYY-MM-DD, or NULL for anything else.
+   * @return \DateTimeImmutable|null
+   *   The date, or NULL for anything that is not a real YYYY-MM-DD one.
    */
-  private function date(mixed $value): ?string {
+  private function date(mixed $value): ?\DateTimeImmutable {
     $value = is_string($value) ? trim($value) : '';
+    $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $value);
 
-    if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $matches)) {
-      return NULL;
-    }
-
-    // The shape alone is not enough: 2026-02-31 matches it.
-    return checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1]) ? $value : NULL;
+    // The round trip rejects a date the calendar does not have: 2026-02-31
+    // parses, but comes back as 2026-03-03.
+    return $date && $date->format('Y-m-d') === $value ? $date : NULL;
   }
 
   /**
@@ -365,8 +334,6 @@ final class StatsForm extends FormBase {
     return [
       '#type' => 'container',
       '#weight' => 10,
-      '#attributes' => ['class' => ['hakuvahti-stats']],
-      '#attached' => ['library' => ['helfi_hakuvahti/stats']],
       'summary' => [
         '#theme' => 'item_list',
         '#items' => $items,

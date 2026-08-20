@@ -82,10 +82,10 @@ interface HakuvahtiInterface {
    *   The site id. Hakuvahti must have configuration for it.
    * @param string $interval
    *   The grain of the returned series, either 'day' or 'month'.
-   * @param string|null $from
-   *   Range start as YYYY-MM-DD, or NULL for hakuvahti's own default.
-   * @param string|null $to
-   *   Range end as YYYY-MM-DD, or NULL for today.
+   * @param \DateTimeImmutable|null $from
+   *   Range start, or NULL for hakuvahti's own default.
+   * @param \DateTimeImmutable|null $to
+   *   Range end, or NULL for today.
    *
    * @return array<string, mixed>
    *   The decoded response. Hakuvahti reports back the range it actually used,
@@ -94,6 +94,6 @@ interface HakuvahtiInterface {
    *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  public function stats(string $siteId, string $interval = 'month', ?string $from = NULL, ?string $to = NULL): array;
+  public function stats(string $siteId, string $interval = 'month', ?\DateTimeImmutable $from = NULL, ?\DateTimeImmutable $to = NULL): array;
 
 }

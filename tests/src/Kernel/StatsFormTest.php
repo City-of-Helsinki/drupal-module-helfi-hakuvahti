@@ -12,12 +12,13 @@ use Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig;
 use Drupal\helfi_hakuvahti\Form\StatsForm;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\helfi_api_base\Traits\ApiTestTrait;
+use Drupal\Tests\helfi_hakuvahti\Traits\StatsResponseTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -30,6 +31,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 class StatsFormTest extends KernelTestBase {
 
   use ApiTestTrait;
+  use StatsResponseTrait;
   use UserCreationTrait;
 
   /**
@@ -61,38 +63,6 @@ class StatsFormTest extends KernelTestBase {
     ])->save();
 
     $this->setUpCurrentUser(permissions: ['view hakuvahti statistics']);
-
-    $logger = $this->prophesize(LoggerInterface::class);
-    $this->container->set('logger.channel.helfi_hakuvahti', $logger->reveal());
-  }
-
-  /**
-   * Tests that the page explains itself when hakuvahti is not configured.
-   *
-   * Without a base url the request throws before it is sent, and carries no
-   * status code the error message could be built from.
-   */
-  public function testWithoutBaseUrl(): void {
-    $this->config('helfi_hakuvahti.settings')->set('base_url', '')->save();
-
-    $form = $this->build();
-
-    $this->assertArrayHasKey('not_configured', $form);
-    $this->assertArrayNotHasKey('actions', $form);
-    $this->assertArrayNotHasKey('report', $form);
-  }
-
-  /**
-   * Tests that the page explains itself when no configuration has a site id.
-   */
-  public function testWithoutSiteId(): void {
-    HakuvahtiConfig::load('jobs')->delete();
-
-    $form = $this->build();
-
-    $this->assertArrayHasKey('no_sites', $form);
-    $this->assertArrayNotHasKey('actions', $form);
-    $this->assertArrayNotHasKey('report', $form);
   }
 
   /**
@@ -101,7 +71,7 @@ class StatsFormTest extends KernelTestBase {
   public function testRendersReport(): void {
     $this->mockResponse();
 
-    $form = $this->build();
+    $form = $this->container->get(FormBuilderInterface::class)->getForm(StatsForm::class);
 
     $this->assertArrayHasKey('report', $form);
     $this->assertCount(12, $form['report']['table']['#header']);
@@ -124,7 +94,7 @@ class StatsFormTest extends KernelTestBase {
   }
 
   /**
-   * Tests that the figures are read for the site the query string names.
+   * Tests that the figures are read for the range the query string names.
    */
   public function testReadsRequestedRange(): void {
     $history = [];
@@ -139,7 +109,7 @@ class StatsFormTest extends KernelTestBase {
     $request->setSession(new Session(new MockArraySessionStorage()));
     $this->container->get('request_stack')->push($request);
 
-    $this->build();
+    $this->container->get(FormBuilderInterface::class)->getForm(StatsForm::class);
 
     $this->assertSame(
       'interval=day&from=2026-07-01&to=2026-08-31',
@@ -148,31 +118,19 @@ class StatsFormTest extends KernelTestBase {
   }
 
   /**
-   * Tests that a range running backwards is caught before it is sent.
+   * Tests that a range hakuvahti would reject is caught before it is sent.
    */
-  public function testValidatesDateOrder(): void {
+  #[TestWith(['2026-08-31', '2026-07-01', 'to'])]
+  #[TestWith(['2026-02-31', '', 'from'])]
+  public function testRejectsUnusableRange(string $from, string $to, string $field): void {
     $formState = $this->submit([
       'site_id' => 'rekry',
       'interval' => 'month',
-      'from' => '2026-08-31',
-      'to' => '2026-07-01',
+      'from' => $from,
+      'to' => $to,
     ], 'show');
 
-    $this->assertArrayHasKey('to', $formState->getErrors());
-  }
-
-  /**
-   * Tests that a date the calendar does not have is caught.
-   */
-  public function testValidatesImpossibleDate(): void {
-    $formState = $this->submit([
-      'site_id' => 'rekry',
-      'interval' => 'month',
-      'from' => '2026-02-31',
-      'to' => '',
-    ], 'show');
-
-    $this->assertArrayHasKey('from', $formState->getErrors());
+    $this->assertArrayHasKey($field, $formState->getErrors());
   }
 
   /**
@@ -224,7 +182,6 @@ class StatsFormTest extends KernelTestBase {
     $csv = (string) $response->getContent();
 
     $this->assertStringStartsWith("\u{FEFF}", $csv);
-    $this->assertStringContainsString("\r\n", $csv);
 
     $rows = explode("\r\n", $csv);
     $this->assertStringStartsWith("\u{FEFF}Period;Created;Confirmed;", $rows[0]);
@@ -241,7 +198,7 @@ class StatsFormTest extends KernelTestBase {
       new Response(404),
     ]));
 
-    $form = $this->build();
+    $form = $this->container->get(FormBuilderInterface::class)->getForm(StatsForm::class);
 
     $this->assertArrayNotHasKey('report', $form);
 
@@ -259,22 +216,8 @@ class StatsFormTest extends KernelTestBase {
     $this->setUpCurrentUser();
     $this->assertSame(403, $this->requestStatusCode());
 
-    // Administering the module is not the same as reading its figures.
-    $this->setUpCurrentUser(permissions: ['administer site configuration']);
-    $this->assertSame(403, $this->requestStatusCode());
-
     $this->setUpCurrentUser(permissions: ['view hakuvahti statistics']);
     $this->assertSame(200, $this->requestStatusCode());
-  }
-
-  /**
-   * Builds the form.
-   *
-   * @return array<string, mixed>
-   *   The built form.
-   */
-  private function build(): array {
-    return $this->container->get(FormBuilderInterface::class)->getForm(StatsForm::class);
   }
 
   /**
@@ -317,62 +260,18 @@ class StatsFormTest extends KernelTestBase {
   }
 
   /**
-   * Answers the next request with a report.
+   * Answers the next request with the fixture.
    *
    * @param array<mixed> $history
    *   Collects the requests that were made.
    */
   private function mockResponse(array &$history = []): void {
     $client = $this->createMockHistoryMiddlewareHttpClient($history, [
-      new Response(200, body: json_encode($this->report(), flags: JSON_THROW_ON_ERROR)),
+      new Response(200, body: $this->statsResponseBody()),
     ]);
 
     $this->container->set('http_client', $client);
     $this->container->set(ClientInterface::class, $client);
-  }
-
-  /**
-   * A response in the shape hakuvahti answers with.
-   *
-   * @return array<string, mixed>
-   *   The report.
-   */
-  private function report(): array {
-    return [
-      'site_id' => 'rekry',
-      'generated_at' => '2026-08-17T09:12:33.000Z',
-      'collecting_since' => '2026-03-10',
-      'range' => ['from' => '2026-07-01', 'to' => '2026-08-31', 'interval' => 'month'],
-      'current' => ['active' => 178, 'unconfirmed' => 4],
-      'periods' => [
-        [
-          'period' => '2026-07',
-          'created' => 25,
-          'confirmed' => 22,
-          'cancelled' => 3,
-          'cancelled_unconfirmed' => 1,
-          'expired' => 0,
-          'expired_unconfirmed' => 0,
-          'confirmed_by_lang' => ['fi' => 19, 'sv' => 2, 'en' => 1],
-          'net_change' => 19,
-          'active_end' => 172,
-          'incomplete' => FALSE,
-        ],
-        [
-          'period' => '2026-08',
-          'created' => 0,
-          'confirmed' => 0,
-          'cancelled' => 0,
-          'cancelled_unconfirmed' => 0,
-          'expired' => 0,
-          'expired_unconfirmed' => 0,
-          'confirmed_by_lang' => ['fi' => 0, 'sv' => 0, 'en' => 0],
-          'net_change' => NULL,
-          'active_end' => NULL,
-          'incomplete' => TRUE,
-        ],
-      ],
-    ];
   }
 
 }

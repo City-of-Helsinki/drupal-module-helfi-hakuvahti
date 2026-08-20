@@ -123,16 +123,15 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   /**
    * {@inheritdoc}
    */
-  public function stats(string $siteId, string $interval = 'month', ?string $from = NULL, ?string $to = NULL): array {
+  public function stats(string $siteId, string $interval = 'month', ?\DateTimeImmutable $from = NULL, ?\DateTimeImmutable $to = NULL): array {
     $response = $this->makeRequest('GET', "/stats/$siteId", [
       // An empty date is not the same as an omitted one: hakuvahti only applies
       // its own default range for a parameter that is not sent at all.
       RequestOptions::QUERY => array_filter([
         'interval' => $interval,
-        'from' => $from,
-        'to' => $to,
+        'from' => $from?->format('Y-m-d'),
+        'to' => $to?->format('Y-m-d'),
       ]),
-      // A year of daily figures does not always fit in the default 5 seconds.
       RequestOptions::TIMEOUT => 10,
     ]);
 
@@ -140,8 +139,6 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
       $data = json_decode((string) $response->getBody(), TRUE, flags: JSON_THROW_ON_ERROR);
     }
     catch (\JsonException $exception) {
-      // Callers catch HakuvahtiException and nothing else, so a proxy answering
-      // with an html error page would otherwise reach the top.
       throw new HakuvahtiException('Hakuvahti returned an unreadable statistics response.', previous: $exception);
     }
 
