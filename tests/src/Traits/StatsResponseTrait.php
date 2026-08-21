@@ -13,7 +13,13 @@ trait StatsResponseTrait {
    * The fixture as hakuvahti would send it.
    */
   protected function statsResponseBody(): string {
-    return file_get_contents(__DIR__ . '/../../fixtures/stats-response.json');
+    $body = file_get_contents(__DIR__ . '/../../fixtures/stats-response.json');
+
+    if ($body === FALSE) {
+      throw new \RuntimeException('Could not read the statistics fixture.');
+    }
+
+    return $body;
   }
 
   /**
