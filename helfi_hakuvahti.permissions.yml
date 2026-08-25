@@ -2,3 +2,7 @@ send hakuvahti broadcast:
   title: 'Send Hakuvahti broadcast messages'
   description: 'Send a message to every Hakuvahti subscriber of a site. This cannot be undone.'
   restrict access: true
+
+view hakuvahti statistics:
+  title: 'View Hakuvahti statistics'
+  description: 'View subscription key figures and download them as CSV.'

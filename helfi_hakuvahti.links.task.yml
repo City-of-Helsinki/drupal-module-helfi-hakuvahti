@@ -8,3 +8,9 @@ helfi_hakuvahti.broadcast:
   title: 'Broadcast message'
   base_route: helfi_hakuvahti.settings
   weight: 10
+
+helfi_hakuvahti.statistics:
+  route_name: helfi_hakuvahti.statistics
+  title: 'Statistics'
+  base_route: helfi_hakuvahti.settings
+  weight: 20

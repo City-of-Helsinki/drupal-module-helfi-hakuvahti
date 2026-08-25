@@ -261,4 +261,27 @@ class HakuvahtiConfig extends ConfigEntityBase {
     return $this;
   }
 
+  /**
+   * Loads the configurations that have a site id, keyed by it.
+   *
+   * @return array<string, self>
+   *   The configurations, ordered by site id.
+   */
+  public static function loadBySiteId(): array {
+    /** @var self[] $configs */
+    $configs = self::loadMultiple();
+    $sites = [];
+
+    foreach ($configs as $config) {
+      // Some hakuvahti_config entities are just broken.
+      if ($config->getSiteId()) {
+        $sites[$config->getSiteId()] = $config;
+      }
+    }
+
+    ksort($sites);
+
+    return $sites;
+  }
+
 }

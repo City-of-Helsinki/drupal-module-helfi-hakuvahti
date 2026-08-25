@@ -172,3 +172,158 @@ msgstr "Liian monta pyyntöä"
 msgctxt "Hakuvahti flood"
 msgid "Too many requests, please try again later."
 msgstr "Liian monta pyyntöä, yritä myöhemmin uudelleen."
+
+msgid "Hakuvahti statistics"
+msgstr "Hakuvahdin tilastot"
+
+msgid "View Hakuvahti statistics"
+msgstr "Katsele hakuvahdin tilastoja"
+
+msgid "View subscription key figures and download them as CSV."
+msgstr "Katsele tilausten tunnuslukuja ja lataa ne CSV-tiedostona."
+
+# Hakuvahti statistics context
+
+msgctxt "Hakuvahti statistics"
+msgid "Hakuvahti"
+msgstr "Hakuvahti"
+
+msgctxt "Hakuvahti statistics"
+msgid "Site"
+msgstr "Sivusto"
+
+msgctxt "Hakuvahti statistics"
+msgid "- Select a site -"
+msgstr "- Valitse sivusto -"
+
+msgctxt "Hakuvahti statistics"
+msgid "One row per"
+msgstr "Aikaväli"
+
+msgctxt "Hakuvahti statistics"
+msgid "Month"
+msgstr "Kuukausi"
+
+msgctxt "Hakuvahti statistics"
+msgid "Day"
+msgstr "Päivä"
+
+msgctxt "Hakuvahti statistics"
+msgid "Start date"
+msgstr "Alkupäivä"
+
+msgctxt "Hakuvahti statistics"
+msgid "End date"
+msgstr "Loppupäivä"
+
+msgctxt "Hakuvahti statistics"
+msgid "Leave both dates empty for the default range: this month and the 12 before it, or the last 31 days."
+msgstr "Jätä molemmat päivät tyhjiksi, niin käytetään oletusjaksoa: kuluva kuukausi ja 12 sitä edeltävää, tai viimeiset 31 päivää."
+
+msgctxt "Hakuvahti statistics"
+msgid "Show"
+msgstr "Näytä"
+
+msgctxt "Hakuvahti statistics"
+msgid "Download CSV"
+msgstr "Lataa CSV"
+
+msgctxt "Hakuvahti statistics"
+msgid "Enter the date as YYYY-MM-DD."
+msgstr "Anna päivämäärä muodossa VVVV-KK-PP."
+
+msgctxt "Hakuvahti statistics"
+msgid "End date cannot be before start date."
+msgstr "Loppupäivä ei voi olla ennen alkupäivää."
+
+msgctxt "Hakuvahti statistics"
+msgid "Active subscriptions: @count"
+msgstr "Aktiivisia tilauksia: @count"
+
+msgctxt "Hakuvahti statistics"
+msgid "Waiting for confirmation: @count"
+msgstr "Odottaa vahvistusta: @count"
+
+msgctxt "Hakuvahti statistics"
+msgid "Showing @from to @to, one row per day."
+msgstr "Näytetään @from–@to, yksi rivi päivää kohden."
+
+msgctxt "Hakuvahti statistics"
+msgid "Showing @from to @to, one row per month."
+msgstr "Näytetään @from–@to, yksi rivi kuukautta kohden."
+
+msgctxt "Hakuvahti statistics"
+msgid "Nothing has been recorded for this site yet."
+msgstr "Tälle sivustolle ei ole vielä kertynyt tilastoja."
+
+msgctxt "Hakuvahti statistics"
+msgid "Read at @time."
+msgstr "Luettu @time."
+
+msgctxt "Hakuvahti statistics"
+msgid "No periods in range."
+msgstr "Aikavälillä ei ole jaksoja."
+
+msgctxt "Hakuvahti statistics"
+msgid "Period"
+msgstr "Jakso"
+
+msgctxt "Hakuvahti statistics"
+msgid "Created"
+msgstr "Luotu"
+
+msgctxt "Hakuvahti statistics"
+msgid "Confirmed"
+msgstr "Vahvistettu"
+
+msgctxt "Hakuvahti statistics"
+msgid "Cancelled"
+msgstr "Keskeytetty"
+
+msgctxt "Hakuvahti statistics"
+msgid "Cancelled before confirming"
+msgstr "Keskeytetty ennen vahvistusta"
+
+msgctxt "Hakuvahti statistics"
+msgid "Expired"
+msgstr "Vanhentunut"
+
+msgctxt "Hakuvahti statistics"
+msgid "Expired before confirming"
+msgstr "Vanhentunut ennen vahvistusta"
+
+msgctxt "Hakuvahti statistics"
+msgid "Net change"
+msgstr "Nettomuutos"
+
+msgctxt "Hakuvahti statistics"
+msgid "Active at end"
+msgstr "Aktiivisia lopussa"
+
+msgctxt "Hakuvahti statistics"
+msgid "Confirmed (@language)"
+msgstr "Vahvistettu (@language)"
+
+msgctxt "Hakuvahti statistics"
+msgid "Hakuvahti is not configured on this site, so there are no statistics to read."
+msgstr "Hakuvahtia ei ole määritetty tälle sivustolle, joten tilastoja ei voi hakea."
+
+msgctxt "Hakuvahti statistics"
+msgid "No Hakuvahti configuration has a site ID, so there are no statistics to read."
+msgstr "Millään hakuvahtimäärityksellä ei ole sivustotunnusta, joten tilastoja ei voi hakea."
+
+msgctxt "Hakuvahti statistics"
+msgid "Hakuvahti did not accept the request. Check the site and the dates."
+msgstr "Hakuvahti ei hyväksynyt pyyntöä. Tarkista sivusto ja päivämäärät."
+
+msgctxt "Hakuvahti statistics"
+msgid "Hakuvahti did not accept this site's API key."
+msgstr "Hakuvahti ei hyväksynyt tämän sivuston API-avainta."
+
+msgctxt "Hakuvahti statistics"
+msgid "This site's Hakuvahti does not report statistics yet."
+msgstr "Tämän sivuston hakuvahti ei vielä raportoi tilastoja."
+
+msgctxt "Hakuvahti statistics"
+msgid "Reading the statistics failed."
+msgstr "Tilastojen lukeminen epäonnistui."

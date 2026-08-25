@@ -1,0 +1,42 @@
+{
+  "site_id": "rekry",
+  "generated_at": "2026-08-17T09:12:33.000Z",
+  "collecting_since": "2026-03-10",
+  "range": {
+    "from": "2026-07-01",
+    "to": "2026-08-31",
+    "interval": "month"
+  },
+  "current": {
+    "active": 178,
+    "unconfirmed": 4
+  },
+  "periods": [
+    {
+      "period": "2026-07",
+      "created": 25,
+      "confirmed": 22,
+      "cancelled": 3,
+      "cancelled_unconfirmed": 1,
+      "expired": 0,
+      "expired_unconfirmed": 0,
+      "confirmed_by_lang": { "fi": 19, "sv": 2, "en": 1 },
+      "net_change": 19,
+      "active_end": 172,
+      "incomplete": false
+    },
+    {
+      "period": "2026-08",
+      "created": 0,
+      "confirmed": 0,
+      "cancelled": 0,
+      "cancelled_unconfirmed": 0,
+      "expired": 0,
+      "expired_unconfirmed": 0,
+      "confirmed_by_lang": { "fi": 0, "sv": 0, "en": 0 },
+      "net_change": null,
+      "active_end": null,
+      "incomplete": true
+    }
+  ]
+}

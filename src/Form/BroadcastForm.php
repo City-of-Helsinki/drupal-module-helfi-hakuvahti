@@ -48,20 +48,7 @@ final class BroadcastForm extends FormBase {
    * @phpstan-return array<string, mixed>
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
-    /** @var \Drupal\helfi_hakuvahti\Entity\HakuvahtiConfig[] $configs */
-    $configs = $this->entityTypeManager->getStorage('hakuvahti_config')->loadMultiple();
-    $siteIds = array_reduce(
-      $configs,
-      static function (array $result, HakuvahtiConfig $config) {
-        // Some hakuvahti_config entities are just broken.
-        if ($config->getSiteId()) {
-          $result[$config->getSiteId()] = $config;
-        }
-        return $result;
-      },
-      []
-    );
-    ksort($siteIds);
+    $siteIds = HakuvahtiConfig::loadBySiteId();
 
     $hasSmsSites = array_any($siteIds, static fn (HakuvahtiConfig $config) => $config->isSmsEnabled());
 

@@ -10,6 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Hakuvahti API client.
@@ -120,6 +121,35 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function stats(string $siteId, string $interval = 'month', ?\DateTimeImmutable $from = NULL, ?\DateTimeImmutable $to = NULL): array {
+    $response = $this->makeRequest('GET', "/stats/$siteId", [
+      // An empty date is not the same as an omitted one: hakuvahti only applies
+      // its own default range for a parameter that is not sent at all.
+      RequestOptions::QUERY => array_filter([
+        'interval' => $interval,
+        'from' => $from?->format('Y-m-d'),
+        'to' => $to?->format('Y-m-d'),
+      ]),
+      RequestOptions::TIMEOUT => 10,
+    ]);
+
+    try {
+      $data = json_decode((string) $response->getBody(), TRUE, flags: JSON_THROW_ON_ERROR);
+    }
+    catch (\JsonException $exception) {
+      throw new HakuvahtiException('Hakuvahti returned an unreadable statistics response.', previous: $exception);
+    }
+
+    if (!is_array($data)) {
+      throw new HakuvahtiException('Hakuvahti returned an unexpected statistics response.');
+    }
+
+    return $data;
+  }
+
+  /**
    * Make hakuvahti request.
    *
    * @param string $method
@@ -129,9 +159,12 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
    * @param array<string, mixed> $options
    *   Guzzle options.
    *
+   * @return \Psr\Http\Message\ResponseInterface
+   *   The response. Only the endpoints that read something use it.
+   *
    * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
    */
-  private function makeRequest(string $method, string $url, array $options = []): void {
+  private function makeRequest(string $method, string $url, array $options = []): ResponseInterface {
     $settings = $this->configFactory->get('helfi_hakuvahti.settings');
     if (!$baseUrl = $settings->get('base_url')) {
       throw new HakuvahtiException('Hakuvahti base url is not configured.');
@@ -140,7 +173,7 @@ final readonly class Hakuvahti implements HakuvahtiInterface {
     $apiKey = $settings->get('api_key');
 
     try {
-      $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
+      return $this->client->request($method, "$baseUrl$url", NestedArray::mergeDeep([
         RequestOptions::HEADERS => [
           'Authorization' => "api-key $apiKey",
         ],

@@ -75,4 +75,25 @@ interface HakuvahtiInterface {
    */
   public function broadcast(BroadcastRequest $request, #[\SensitiveParameter] string $accessToken): void;
 
+  /**
+   * Read per-site subscription key figures.
+   *
+   * @param string $siteId
+   *   The site id. Hakuvahti must have configuration for it.
+   * @param string $interval
+   *   The grain of the returned series, either 'day' or 'month'.
+   * @param \DateTimeImmutable|null $from
+   *   Range start, or NULL for hakuvahti's own default.
+   * @param \DateTimeImmutable|null $to
+   *   Range end, or NULL for today.
+   *
+   * @return array<string, mixed>
+   *   The decoded response. Hakuvahti reports back the range it actually used,
+   *   which is not necessarily the one that was asked for: it snaps both ends
+   *   out to whole periods and caps the length.
+   *
+   * @throws \Drupal\helfi_hakuvahti\HakuvahtiException
+   */
+  public function stats(string $siteId, string $interval = 'month', ?\DateTimeImmutable $from = NULL, ?\DateTimeImmutable $to = NULL): array;
+
 }
