@@ -1,0 +1,37 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter &\$build by\-ref type of method Drupal\\helfi_hakuvahti\\DrupalSettings\:\:applyTo\(\) expects array\<string, mixed\>, array given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/DrupalSettings.php
+
+		-
+			message: '#^Property Drupal\\helfi_hakuvahti\\Entity\\HakuvahtiConfig\:\:\$site_id \(string\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: src/Entity/HakuvahtiConfig.php
+
+		-
+			message: '#^Drupal\\Core\\DependencyInjection\\DependencySerializationTrait does not support private properties\.$#'
+			identifier: dependencySerializationTraitProperty.unsupportedPrivateProperty
+			count: 4
+			path: src/Form/BroadcastForm.php
+
+		-
+			message: '#^Drupal\\Core\\DependencyInjection\\DependencySerializationTrait does not support private properties\.$#'
+			identifier: dependencySerializationTraitProperty.unsupportedPrivateProperty
+			count: 3
+			path: src/Form/StatsForm.php
+
+		-
+			message: '#^Cannot cast array\|Drupal\\Component\\Render\\MarkupInterface\|string to string\.$#'
+			identifier: cast.string
+			count: 6
+			path: tests/src/Kernel/BreadcrumbHookTest.php
+
+		-
+			message: '#^Method Drupal\\Tests\\helfi_hakuvahti\\Kernel\\BroadcastFormTest\:\:submit\(\) should return Drupal\\Core\\Form\\FormState but returns Drupal\\Core\\Form\\FormStateInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: tests/src/Kernel/BroadcastFormTest.php
