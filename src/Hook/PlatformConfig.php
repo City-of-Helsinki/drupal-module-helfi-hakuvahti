@@ -23,6 +23,9 @@ final readonly class PlatformConfig {
         'send hakuvahti broadcast',
         'view hakuvahti statistics',
       ],
+      'editor' => [
+        'view hakuvahti statistics',
+      ],
     ];
   }
 
