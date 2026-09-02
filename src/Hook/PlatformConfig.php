@@ -21,6 +21,7 @@ final readonly class PlatformConfig {
     return [
       'admin' => [
         'send hakuvahti broadcast',
+        'view hakuvahti statistics',
       ],
     ];
   }
