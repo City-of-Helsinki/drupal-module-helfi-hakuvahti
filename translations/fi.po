@@ -4,6 +4,24 @@ msgstr ""
 msgid "Hakuvahti settings"
 msgstr "Hakuvahdin asetukset"
 
+msgid "Hakuvahti settings and statistics."
+msgstr "Hallinnoi hakuvahdin asetuksia ja tarkastele statistiikkaa."
+
+msgid "Edit Hakuvahti settings."
+msgstr "Hallinnoi hakuvahdin asetuksia."
+
+msgid "Send Hakuvahti broadcast"
+msgstr "Hakuvahdin viestit"
+
+msgid "Send a message to every Hakuvahti subscriber."
+msgstr "Lähetä viesti kaikille Hakuvahti-tilaajille."
+
+msgid "Hakuvahti statistics."
+msgstr "Hakuvahdin tilastot"
+
+msgid "View hakuvahti statistics."
+msgstr "Tarkastele hakuvahdin tilastoja."
+
 msgid "Confirm search alert"
 msgstr "Hakuvahdin vahvistaminen"
 

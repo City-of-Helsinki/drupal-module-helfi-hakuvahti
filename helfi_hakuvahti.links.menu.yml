@@ -1,17 +1,27 @@
+helfi_hakuvahti.overview:
+  title: 'Hakuvahti'
+  description: 'Hakuvahti settings and statistics.'
+  route_name: helfi_hakuvahti.overview
+  parent: hdbt_admin_tools.overview
+  weight: -8
+
 helfi_hakuvahti.settings:
   title: 'Hakuvahti settings'
+  description: 'Edit Hakuvahti settings.'
   route_name: helfi_hakuvahti.settings
-  parent: hdbt_admin_tools.site_information
-  weight: 90
+  parent: helfi_hakuvahti.overview
+  weight: 10
 
 helfi_hakuvahti.broadcast:
   title: 'Send Hakuvahti broadcast'
+  description: 'Send a message to every Hakuvahti subscriber.'
   route_name: helfi_hakuvahti.broadcast
-  parent: hdbt_admin_tools.site_information
-  weight: 91
+  parent: helfi_hakuvahti.overview
+  weight: 11
 
 helfi_hakuvahti.statistics:
   title: 'Hakuvahti statistics'
+  description: 'View hakuvahti statistics.'
   route_name: helfi_hakuvahti.statistics
-  parent: hdbt_admin_tools.site_information
-  weight: 92
+  parent: helfi_hakuvahti.overview
+  weight: 12
