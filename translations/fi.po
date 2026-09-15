@@ -5,7 +5,7 @@ msgid "Hakuvahti settings"
 msgstr "Hakuvahdin asetukset"
 
 msgid "Hakuvahti settings and statistics."
-msgstr "Hallinnoi hakuvahdin asetuksia ja tarkastele statistiikkaa."
+msgstr "Hallinnoi hakuvahdin asetuksia ja tarkastele tilastoja."
 
 msgid "Edit Hakuvahti settings."
 msgstr "Hallinnoi hakuvahdin asetuksia."
