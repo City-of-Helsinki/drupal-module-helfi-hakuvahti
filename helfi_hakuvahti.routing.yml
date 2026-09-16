@@ -1,5 +1,15 @@
-helfi_hakuvahti.settings:
+helfi_hakuvahti.overview:
   path: '/admin/tools/hakuvahti'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Hakuvahti'
+  requirements:
+    _permission: 'send hakuvahti broadcast+view hakuvahti statistics'
+  options:
+    _admin_route: TRUE
+
+helfi_hakuvahti.settings:
+  path: '/admin/tools/hakuvahti/settings'
   defaults:
     _form: '\Drupal\helfi_hakuvahti\Form\SettingsForm'
     _title: 'Hakuvahti settings'
