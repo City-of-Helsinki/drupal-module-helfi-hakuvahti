@@ -6,14 +6,14 @@ namespace Drupal\helfi_hakuvahti\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Flood\FloodInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\helfi_hakuvahti\Event\SubscriptionAlterEvent;
 use Drupal\helfi_hakuvahti\Event\SubscriptionEvent;
 use Drupal\helfi_hakuvahti\HakuvahtiException;
 use Drupal\helfi_hakuvahti\HakuvahtiInterface;
 use Drupal\helfi_hakuvahti\HakuvahtiRequest;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Creates new subscription.
  */
-final class HakuvahtiSubscribeController extends ControllerBase implements LoggerAwareInterface {
-
-  use LoggerAwareTrait;
+final class HakuvahtiSubscribeController extends ControllerBase {
 
   private const string FLOOD_EVENT = 'helfi_hakuvahti.subscribe';
   private const int FLOOD_THRESHOLD = 10;
@@ -33,6 +31,8 @@ final class HakuvahtiSubscribeController extends ControllerBase implements Logge
     private readonly HakuvahtiInterface $hakuvahti,
     private readonly EventDispatcherInterface $eventDispatcher,
     private readonly FloodInterface $flood,
+    #[Autowire(service: 'logger.channel.helfi_hakuvahti')]
+    private readonly LoggerChannelInterface $logger,
   ) {
   }
 
@@ -78,7 +78,7 @@ final class HakuvahtiSubscribeController extends ControllerBase implements Logge
     }
     catch (\InvalidArgumentException | \JsonException $e) {
       // The frontend should not send invalid requests.
-      $this->logger?->error('Hakuvahti initial subscription failed: ' . $e->getMessage());
+      $this->logger->error('Hakuvahti initial subscription failed: ' . $e->getMessage());
       return new JsonResponse(['success' => FALSE, 'error' => 'Error while handling the request.'], Response::HTTP_BAD_REQUEST);
     }
 
@@ -93,7 +93,7 @@ final class HakuvahtiSubscribeController extends ControllerBase implements Logge
       $this->eventDispatcher->dispatch(new SubscriptionEvent($requestObject));
     }
     catch (HakuvahtiException $e) {
-      $this->logger?->error("Unable to send Hakuvahti-request - Code {$e->getCode()}: {$e->getMessage()}");
+      $this->logger->error("Unable to send Hakuvahti-request - Code {$e->getCode()}: {$e->getMessage()}");
       return new JsonResponse(['success' => FALSE, 'error' => 'Error while handling the request.'], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
