@@ -13,8 +13,6 @@ use Drupal\helfi_hakuvahti\HakuvahtiException;
 use Drupal\helfi_hakuvahti\HakuvahtiInterface;
 use Drupal\helfi_hakuvahti\HakuvahtiRequest;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
