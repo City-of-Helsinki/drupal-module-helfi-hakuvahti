@@ -62,6 +62,7 @@ readonly class DrupalSettings {
       }
 
       $drupalSettings['apiUrl'] = Url::fromRoute('helfi_hakuvahti.subscribe')->toString();
+      $drupalSettings['langcode'] = $langcode;
 
       $build['#attached']['drupalSettings']['hakuvahti'] = $drupalSettings;
 
